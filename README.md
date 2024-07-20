@@ -40,7 +40,9 @@ Note: server-side analogous, reference in blueprints.
 
 ```py
 crawl_result = omlmd.crawl([
-    "localhost:8080/matteo/ml-artifact:v1", "localhost:8080/matteo/ml-artifact:v2", "localhost:8080/matteo/ml-artifact:v3"
+    "localhost:8080/matteo/ml-artifact:v1",
+    "localhost:8080/matteo/ml-artifact:v2",
+    "localhost:8080/matteo/ml-artifact:v3"
 ])
 ```
 
