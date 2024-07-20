@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "omlmd"
+version = "0.1.0a1"
+description = ""
+authors = ["Matteo Mortari <matteo.mortari@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+oras = "^0.1.30"
+pyyaml = "^6.0.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+jq = "^1.7.0"
+scikit-learn = "^1.5.0"
+ipykernel = "^6.29.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
