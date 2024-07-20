@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "omlmd"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Matteo Mortari <matteo.mortari@gmail.com>"]
 readme = "README.md"
