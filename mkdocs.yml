@@ -1,0 +1,32 @@
+site_name: OCI Artifact for ML model & metadata
+theme:
+  name: material
+  palette:
+    scheme: slate
+  features:
+    - navigation.expand # temporary for bootstrap
+extra_css:
+  - stylesheets/extra.css
+nav:
+  - Getting Started: 'README.md'
+  - Overview: 'overview.md'
+  - Demos:
+    - 'Demo 1: Introduction': 'demos/demo.md'
+    - 'Demo 2: more about ModelCar': 'demos/demo2.md'
+    - 'Demo 3: Signature and Attestation': 'demos/demo3.md'
+  - Use Cases: 'use-cases.md'
+  - Glossary: 'glossary.md'
+extra:
+  social:
+    - icon: fontawesome/brands/github 
+      link: https://github.com/tarilabs/omlmd
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
