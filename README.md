@@ -17,9 +17,7 @@ In your Python environment, use:
 pip install omlmd
 ```
 
-!!! note
-    
-    CLI coming soon.
+_Note: CLI coming soon._
 
 ## Push
 
@@ -60,9 +58,7 @@ print(md)
 
 Client-side crawling of metadata.
 
-!!! note
-    
-    Server-side analogous coming soon/reference in blueprints.
+_Note: Server-side analogous coming soon/reference in blueprints._
 
 ```py
 crawl_result = omlmd.crawl([

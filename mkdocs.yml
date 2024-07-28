@@ -12,7 +12,7 @@ nav:
   - Overview: 'overview.md'
   - Demos:
     - 'Demo 1: Introduction': 'demos/demo.md'
-    - 'Demo 2: more about ModelCar': 'demos/demo2.md'
+    - 'Demo 2: more on ModelCar': 'demos/demo2.md'
     - 'Demo 3: Signature and Attestation': 'demos/demo3.md'
   - Use Cases: 'use-cases.md'
   - Glossary: 'glossary.md'
