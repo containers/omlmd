@@ -56,7 +56,7 @@ class Helper:
         write_content_to_file("model_metadata.omlmd.json", lambda: model_metadata.to_json())
         write_content_to_file("model_metadata.omlmd.yaml", lambda: model_metadata.to_yaml())
         files = [
-            f"{path}:application/x-artifact",
+            f"{path}:application/x-mlmodel",
             "model_metadata.omlmd.json:application/x-config",
             "model_metadata.omlmd.yaml:application/x-config",
         ]
