@@ -1,5 +1,5 @@
 site_name: OCI Artifact for ML model & metadata
-site_url: https://tarilabs.github.io/omlmd
+site_url: https://tarilabs.github.io/omlmd/
 repo_url: https://github.com/tarilabs/omlmd
 repo_name: tarilabs/omlmd
 theme:
