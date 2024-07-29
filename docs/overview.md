@@ -4,7 +4,7 @@ This project aims to demonstrate how ML model and related metadata can be stored
 
 !!! tip "For the impatients"
 
-    You can jump straight to [Demo 1](demos/demo).
+    You can jump straight to [Demo 1](/demos/demo).
 
 The proposed OCI Artifact for ML model and metadata can be organized and then stored in OCI compliant registries with a format similar to the following:
 

@@ -9,7 +9,7 @@ hide:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/B3K0z8LMROE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
-<!-- TODO revise this lorem ipsum -->
+_TODO revise this summary_
 
 In this demo, we expand on using OCI Artifacts and underlying infrastructure for storing and distributing machine learning model assets, and their metadata. We focus on Signatures and Attestations, which are crucial for building a _trusted model supply chain_. Ensuring a trusted software supply chain is vital, especially in MLOps, where model Provenance and Lineage are essential to confirm that models put into production are secure and traceable.
 
