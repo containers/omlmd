@@ -1,4 +1,8 @@
 from omlmd.model_metadata import ModelMetadata
+from omlmd.model_metadata import deserialize_mdfile
+import tempfile
+import json
+import yaml
 
 def test_dry_run_model_metadata_json_yaml_conversions():
     metadata = ModelMetadata(name="Example Model", author="John Doe")
@@ -16,3 +20,25 @@ def test_dry_run_model_metadata_json_yaml_conversions():
 
     assert metadata == metadata_from_json
     assert metadata == metadata_from_yaml
+
+
+def test_deserialize_file_json():
+    md_dict = ModelMetadata(name="Example Model", author="John Doe", model_format_name="onnx", model_format_version="1", customProperties={"accuracy": .987}).to_dict()
+    json_str = json.dumps(md_dict)
+
+    with tempfile.NamedTemporaryFile(delete=True, mode="w") as f:
+        f.write(json_str)
+        f.flush()
+        metadata_from_json = deserialize_mdfile(f.name)
+        assert md_dict == metadata_from_json
+
+
+def test_deserialize_file_yaml():
+    md_dict = ModelMetadata(name="Example Model", author="John Doe", model_format_name="onnx", model_format_version="1", customProperties={"accuracy": .987}).to_dict()
+    yaml_str = yaml.dump(md_dict)
+
+    with tempfile.NamedTemporaryFile(delete=True, mode="w") as f:
+        f.write(yaml_str)
+        f.flush()
+        metadata_from_yaml = deserialize_mdfile(f.name)
+        assert md_dict == metadata_from_yaml

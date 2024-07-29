@@ -24,7 +24,7 @@ def download_file(uri):
 class Helper:
     def __init__(self, registry: Optional[OMLMDRegistry] = None):
         if registry is None:
-            self._registry = OMLMDRegistry(insecure=True)
+            self._registry = OMLMDRegistry(insecure=True) # TODO: this is a bit limiting when used from CLI, to be refactored
         else:
             self._registry = registry
 
@@ -61,6 +61,7 @@ class Helper:
             "model_metadata.omlmd.yaml:application/x-config",
         ]
         try:
+            # print(target, files, model_metadata.to_annotations_dict())
             return self._registry.push(
                 target=target,
                 files=files,

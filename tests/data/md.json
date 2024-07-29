@@ -1,0 +1,7 @@
+{
+    "name": "Model Example",
+    "description": "Lorem ipsum",
+    "author": "John Doe",
+    "accuracy": 0.987,
+    "license": "Apache-2.0"
+}
