@@ -9,7 +9,7 @@ hide:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/n2Fmt-hsnLM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
-<!-- TODO revise this lorem ipsum -->
+_TODO: revise this summary_
 
 In this follow-up demo, we focus on using OCI Artifacts for Machine Learning model assets and their metadata, specifically within the context of "ModelCar". We start by recapping the previous setup where we wrapped a machine learning model as an OCI artifact and then as a ModelCar. Today, we'll explore three demos: using the ModelCar in a traditional KServe setup, using it within a KServe raw environment, and directly utilizing the OCI artifact in KServe with a custom storage initializer.
 
