@@ -1,0 +1,183 @@
+# Default values for zot.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  ## NOTE: for local testing, might want to use `ghcr.io/project-zot/zot-linux-arm64` instead...
+  repository: ghcr.io/project-zot/zot-linux-amd64
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v2.1.0"
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+service:
+  type: NodePort
+  ## NOTE: changed for testing
+  port: 5001
+  nodePort: null  # Set to a specific port if type is NodePort
+  # Annotations to add to the service
+  annotations: {}
+  # Set to a static IP if a static IP is desired, only works when
+  # type: ClusterIP
+  clusterIP: null
+# Enabling this will publicly expose your zot server
+# Only enable this if you have security enabled on your cluster
+ingress:
+  enabled: false
+  annotations: {}
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  # If using nginx, disable body limits and increase read and write timeouts
+  # nginx.ingress.kubernetes.io/proxy-body-size: "0"
+  # nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+  # nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+  className: "nginx"
+  pathtype: ImplementationSpecific
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+# By default, Kubernetes HTTP probes use HTTP 'scheme'. So if TLS is enabled
+# in configuration, to prevent failures, the scheme must be set to 'HTTPS'.
+httpGet:
+  scheme: HTTP
+# By default, Kubernetes considers a Pod healthy if the liveness probe returns
+# successfully. However, sometimes applications need additional startup time on
+# their first initialization. By defining a startupProbe, we can allow the
+# application to take extra time for initialization without compromising fast
+# response to deadlocks.
+startupProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  failureThreshold: 3
+# If mountConfig is true the configMap named $CHART_RELEASE-config is mounted
+# on the pod's '/etc/zot' directory
+mountConfig: false
+# If mountConfig is true the chart creates the '$CHART_RELEASE-config', if it
+# does not exist the user is in charge of managing it (as this file includes a
+# sample file you have to add it empty to handle it externally).
+configFiles:
+  ## NOTE: changed for testing
+  config.json: |-
+    {
+      "storage": { "rootDirectory": "/var/lib/registry" },
+      "http": { "address": "0.0.0.0", "port": "5001" },
+      "log": { "level": "debug" }
+    }
+# Alternatively, the configuration can include authentication and acessControl
+# data and we can use mountSecret option for the passwords.
+#
+#  config.json: |-
+#    {
+#      "storage": { "rootDirectory": "/var/lib/registry" },
+#      "http": {
+#        "address": "0.0.0.0",
+#        "port": "5000",
+#        "auth": { "htpasswd": { "path": "/secret/htpasswd" } },
+#        "accessControl": {
+#          "repositories": {
+#            "**": {
+#              "policies": [{
+#                "users": ["user"],
+#                "actions": ["read"]
+#              }],
+#              "defaultPolicy": []
+#            }
+#          },
+#          "adminPolicy": {
+#            "users": ["admin"],
+#            "actions": ["read", "create", "update", "delete"]
+#          }
+#        }
+#      },
+#      "log": { "level": "debug" }
+#    }
+
+# externalSecrets allows to mount external (meaning not managed by this chart)
+# Kubernetes secrets within the Zot container.
+# The secret is identified by its name (property "secretName") and should be
+# present in the same namespace. The property "mountPath" specifies the path
+# within the container filesystem where the secret is mounted.
+#
+# Below is an example:
+#
+#  externalSecrets:
+#  - secretName: "secret1"
+#    mountPath: "/secrets/s1"
+#  - secretName: "secret2"
+#    mountPath: "/secrets/s2"
+externalSecrets: []
+# If mountSecret is true, the Secret named $CHART_RELEASE-secret is mounted on
+# the pod's '/secret' directory (it is used to keep files with passwords, like
+# a `htpasswd` file)
+mountSecret: false
+# If secretFiles does not exist the user is in charge of managing it, again, if
+# you want to manage it the value has to be added empty to avoid using this one
+secretFiles:
+  # Example htpasswd with 'admin:admin' & 'user:user' user:pass pairs
+  htpasswd: |-
+    admin:$2y$05$vmiurPmJvHylk78HHFWuruFFVePlit9rZWGA/FbZfTEmNRneGJtha
+    user:$2y$05$L86zqQDfH5y445dcMlwu6uHv.oXFgT6AiJCwpv3ehr7idc0rI3S2G
+# Authentication string for Kubernetes probes, which is needed when `htpasswd`
+# authentication is enabled, but the anonymous access policy is not.
+# It contains a `user:password` string encoded in base64. The example value is
+# from running `echo -n "foo:var" | base64`
+# authHeader: "Zm9vOmJhcg=="
+
+# If persistence is 'true' the service uses a persistentVolumeClaim to mount a
+# volume for zot on '/var/lib/registry'; by default the pvc used is named
+# '$CHART_RELEASE-pvc', but the name can be changed below
+persistence: false
+# PVC data, only used if persistence is 'true'
+pvc:
+  # Make the chart create the PVC, this option is used with storageClasses that
+  # can create volumes dynamically, if that is not the case is better to do it
+  # manually and set create to false
+  create: false
+  # Name of the PVC to use or create if persistence is enabled, if not set the
+  # value '$CHART_RELEASE-pvc' is used
+  name: null
+  # Volume access mode, if using more than one replica we need
+  accessMode: "ReadWriteOnce"
+  # Size of the volume requested
+  ## NOTE: changed for testing
+  storage: 100Mi
+  # Name of the storage class to use if it is different than the default one
+  storageClassName: null
+# List of environment variables to set on the container
+env:
+# - name: "TEST"
+#  value: "ME"
+# - name: SECRET_NAME
+#  valueFrom:
+#    secretKeyRef:
+#      name: mysecret
+#      key: username
+
+# Extra Volume Mounts
+extraVolumeMounts: []
+# - name: data
+#   mountPath: /var/lib/registry
+
+# Extra Volumes
+extraVolumes: []
+# - name: data
+#   emptyDir: {}
+
+# Deployment strategy type
+strategy:
+  type: RollingUpdate
+#  rollingUpdate:
+#    maxUnavailable: 25%
+
+podAnnotations: {}
