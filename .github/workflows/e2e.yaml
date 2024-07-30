@@ -32,3 +32,28 @@ jobs:
     - name: Run tests
       run: |
         poetry run pytest --e2e -s -x
+  e2e-zot:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10' 
+    - name: Install Poetry
+      run: |
+        pipx install poetry
+    - name: Install dependencies
+      run: |
+        poetry install
+    - name: Start Kind Cluster
+      uses: helm/kind-action@v1
+      with:
+        cluster_name: kind
+    - name: Start Zot
+      run: |
+        ./e2e/deploy_zot.sh
+    - name: Run tests
+      run: |
+        poetry run pytest --e2e -s -x
