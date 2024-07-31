@@ -21,7 +21,7 @@ jobs:
         pipx install poetry
     - name: Install dependencies
       run: |
-        poetry install
+        make install
     - name: Run tests
       run: |
-        poetry run pytest -s -x
+        make test
