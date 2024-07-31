@@ -21,7 +21,7 @@ jobs:
         pipx install poetry
     - name: Install dependencies
       run: |
-        poetry install
+        make install
     - name: Start Kind Cluster
       uses: helm/kind-action@v1
       with:
@@ -29,9 +29,9 @@ jobs:
     - name: Start distribution-registry
       run: |
         ./e2e/deploy_distribution_registry.sh
-    - name: Run tests
+    - name: Run E2E tests
       run: |
-        poetry run pytest --e2e -s -x
+        make test-e2e
   e2e-zot:
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +46,7 @@ jobs:
         pipx install poetry
     - name: Install dependencies
       run: |
-        poetry install
+        make install
     - name: Start Kind Cluster
       uses: helm/kind-action@v1
       with:
@@ -54,6 +54,6 @@ jobs:
     - name: Start Zot
       run: |
         ./e2e/deploy_zot.sh
-    - name: Run tests
+    - name: Run E2E tests
       run: |
-        poetry run pytest --e2e -s -x
+        make test-e2e

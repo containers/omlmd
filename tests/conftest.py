@@ -3,12 +3,12 @@ import pytest
 
 def pytest_collection_modifyitems(config, items):
     if config.getoption("--e2e"):
-        skip_not_e2e = pytest.mark.skip(reason="skipping non-e2e tests")
+        skip_not_e2e = pytest.mark.skip(reason="skipping non-e2e tests; opt-out of --e2e option to run.")
         for item in items:
             if "e2e" not in item.keywords:
                 item.add_marker(skip_not_e2e)
         return
-    skip_e2e = pytest.mark.skip(reason="test requires --e2e option to run")
+    skip_e2e = pytest.mark.skip(reason="this is an end-to-end test, requires explicit opt-in --e2e option to run.")
     for item in items:
         if "e2e" in item.keywords:
             item.add_marker(skip_e2e)
