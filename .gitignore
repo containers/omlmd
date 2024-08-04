@@ -13,3 +13,6 @@ dist
 
 # Mkdocs
 site
+
+# E2E
+venv
