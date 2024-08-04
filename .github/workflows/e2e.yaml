@@ -32,6 +32,9 @@ jobs:
     - name: Run E2E tests
       run: |
         make test-e2e
+    - name: Run E2E tests for CLI # only running once using distribution/registry intentionally
+      run: |
+        ./e2e/test_cli.sh
   e2e-zot:
     runs-on: ubuntu-latest
     steps:

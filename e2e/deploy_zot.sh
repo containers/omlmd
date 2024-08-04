@@ -1,6 +1,7 @@
-#! /bin/bash
+#!/bin/bash
 
 SCRIPT_DIR="$(dirname "$(realpath "$BASH_SOURCE")")"
+set -e
 
 helm repo add zot https://zotregistry.dev/helm-charts/
 
