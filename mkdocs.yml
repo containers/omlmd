@@ -8,6 +8,7 @@ theme:
     scheme: slate
   features:
     - navigation.expand # temporary for bootstrap
+    - content.tabs.link
 extra_css:
   - stylesheets/extra.css
 nav:
@@ -33,5 +34,7 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - admonition
   - pymdownx.details
