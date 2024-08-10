@@ -14,7 +14,6 @@ fi
 echo "Deploying quay K8s Secret with config.yaml ..."
 FILE_NAME="config.yaml"
 SECRET_NAME="quay-app-config"
-cat "$SCRIPT_DIR/quay-lite/$FILE_NAME"
 ENCODED_CONTENT=$(base64 -i "$SCRIPT_DIR/quay-lite/$FILE_NAME" | tr -d '\n') # MacOSX and Linux instead of -w 0 Vs -b 0
 cat <<EOF > "$SCRIPT_DIR/quay-lite/$SECRET_NAME.yaml"
 apiVersion: v1
@@ -25,7 +24,6 @@ type: Opaque
 data:
   $(basename $FILE_NAME): $ENCODED_CONTENT
 EOF
-cat "$SCRIPT_DIR/quay-lite/$SECRET_NAME.yaml"
 kubectl apply -f "$SCRIPT_DIR/quay-lite/$SECRET_NAME.yaml"
 
 echo "Deploying quay-lite ..."
