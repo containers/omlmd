@@ -115,7 +115,7 @@ First, the ML model and (replicable) metadata get signed as OCI Artifact on a OC
 
 This in turn provides a signature chain, supporting more than _Lineage_, also _Provenance_.
 
-See also demo 3 in this project.
+See also [Demo 3](demos/demo3.md) in this project.
 
 ## Integration with OPA
 
