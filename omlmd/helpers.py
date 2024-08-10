@@ -1,7 +1,6 @@
-from dataclasses import dataclass, field, asdict, fields
-from typing import Optional, Dict, Any, List
+from dataclasses import fields
+from typing import Optional, List
 from omlmd.model_metadata import ModelMetadata
-from oras.provider import Registry
 from omlmd.provider import OMLMDRegistry
 import os
 import urllib.request

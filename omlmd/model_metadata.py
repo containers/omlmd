@@ -16,11 +16,11 @@ class ModelMetadata:
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=4)
     
-    def to_dict(self) -> str:
+    def to_dict(self) -> dict[str, Any]:
         as_json = self.to_json()
         return json.loads(as_json)
     
-    def to_annotations_dict(self) -> str:
+    def to_annotations_dict(self) -> dict[str, str]:
         as_dict = self.to_dict()
         result = {}
         # TODO: likely key in annotation require FQDN

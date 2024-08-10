@@ -26,3 +26,11 @@ test:
 .PHONY: test-e2e
 test-e2e:
 	poetry run pytest --e2e -s -x -rA
+
+.PHONY: lint
+lint:
+	poetry run ruff check --fix
+
+.PHONY: mypy
+mypy:
+	poetry run mypy .
