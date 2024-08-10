@@ -1,5 +1,4 @@
 import os
-import sys
 
 import oras.defaults
 import oras.oci
@@ -26,7 +25,7 @@ class OMLMDRegistry(oras.provider.Registry):
         paths = []
 
         for layer in manifest.get('layers', []):
-            if media_types == None or len(media_types) == 0 or layer['mediaType'] in media_types:
+            if media_types is None or len(media_types) == 0 or layer['mediaType'] in media_types:
                 artifact = layer['annotations']['org.opencontainers.image.title']
                 outfile = oras.utils.sanitize_path(download_dir, os.path.join(download_dir, artifact))
                 path = self.download_blob(package, layer['digest'], outfile)
@@ -63,3 +62,4 @@ class OMLMDRegistry(oras.provider.Registry):
                                 os.rmdir(os.path.join(root, dir))
                         os.rmdir(temp_dir)
                         # print("Temporary directory and its contents have been removed.")
+        raise RuntimeError("Unable to locate config layer")
