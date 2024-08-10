@@ -1,9 +1,16 @@
 [tool.poetry]
 name = "omlmd"
 version = "0.1.2"
-description = ""
+description = "OCI Artifact for ML model & metadata"
 authors = ["Matteo Mortari <matteo.mortari@gmail.com>"]
 readme = "README.md"
+
+[project.urls]
+Homepage = "https://tarilabs.github.io/omlmd"
+Documentation = "https://tarilabs.github.io/omlmd"
+Repository = "https://github.com/tarilabs/omlmd.git"
+Issues = "https://github.com/tarilabs/omlmd/issues"
+Changelog = "https://github.com/tarilabs/omlmd/releases"
 
 [tool.poetry.dependencies]
 python = "^3.9"

@@ -12,7 +12,7 @@ theme:
 extra_css:
   - stylesheets/extra.css
 nav:
-  - Getting Started: 'README.md'
+  - Getting Started: 'index.md'
   - Overview: 'overview.md'
   - Demos:
     - 'Demo 1: Introduction': 'demos/demo.md'

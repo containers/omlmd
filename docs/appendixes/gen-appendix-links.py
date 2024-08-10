@@ -32,8 +32,9 @@ def get_all_hrefs(dir):
                 tokens = md.parse(f.read())
                 node = SyntaxTreeNode(tokens)
                 for n in node.walk():
-                    if n.type == "link":
+                    if n.type == "link" and n.attrs["href"].startswith("http"):
                         all_href.append(n.attrs["href"])
+    all_href = list(dict.fromkeys(all_href))
     all_href.sort()
     print(all_href)
     return all_href
