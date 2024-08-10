@@ -22,5 +22,5 @@ def pytest_addoption(parser):
 
 @pytest.fixture
 def target() -> str:
-    return "localhost:5001/mmortari/mlartifact:v1"
+    return "localhost:5001/testorgns/ml-model-artifact:v1"
 

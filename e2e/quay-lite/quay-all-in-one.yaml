@@ -1,0 +1,209 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quay-tmp
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+data:
+  pg_bootstrap.sql: |
+    CREATE EXTENSION IF NOT EXISTS pg_trgm;
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: quay-postgresql-postgresql-start
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quay-postgresql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quay-postgresql
+  template:
+    metadata:
+      labels:
+        app: quay-postgresql
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_USER
+          value: quay
+        - name: POSTGRES_PASSWORD
+          value: quay
+        - name: POSTGRES_DB
+          value: quay
+        image: docker.io/library/postgres:12.1
+        name: postgresql
+        ports:
+        - containerPort: 5432
+        resources:
+          requests:
+            cpu: 4m
+            memory: 40Mi
+        volumeMounts:
+        - name: postgresql-start
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: postgresql-start
+        configMap:
+          name: quay-postgresql-postgresql-start
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quay-postgresql
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+  selector:
+    app: quay-postgresql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quay-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quay-redis
+  template:
+    metadata:
+      labels:
+        app: quay-redis
+    spec:
+      containers:
+      - image: docker.io/library/redis:latest
+        name: redis
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            cpu: 2m
+            memory: 10Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quay-redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+  selector:
+    app: quay-redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quay-app
+  annotations:
+    app.openshift.io/connects-to: |
+      [
+        {"apiVersion":"apps/v1","kind":"Deployment","name":"quay-redis"},
+        {"apiVersion":"apps/v1","kind":"Deployment","name":"quay-postgresql"}
+      ]
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quay-app
+  template:
+    metadata:
+      labels:
+        app: quay-app
+    spec:
+      containers:
+      # web
+      - image: quay.io/projectquay/quay:latest
+        env:
+        - name: QUAY_SERVICES
+          value: "gunicorn-web"
+        - name: WORKER_COUNT
+          value: "1"
+        - name: DEBUGLOG
+          value: "true"
+        name: web
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /quay-registry/conf/stack
+        - name: tmp
+          mountPath: /tmp
+      # registry
+      - image: quay.io/projectquay/quay:latest
+        env:
+        - name: QUAY_SERVICES
+          value: "gunicorn-registry"
+        - name: WORKER_COUNT
+          value: "1"
+        - name: DEBUGLOG
+          value: "true"
+        name: registry
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /quay-registry/conf/stack
+        - name: tmp
+          mountPath: /tmp
+      # nginx and pushgateway
+      - image: quay.io/projectquay/quay:latest
+        env:
+        - name: QUAY_SERVICES
+          value: "nginx,pushgateway"
+        - name: WORKER_COUNT
+          value: "1"
+        - name: DEBUGLOG
+          value: "true"
+        name: nginx
+        volumeMounts:
+        - name: config
+          mountPath: /quay-registry/conf/stack
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: config
+        secret:
+          secretName: quay-app-config
+      - name: tmp
+        persistentVolumeClaim:
+          claimName: quay-tmp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quay-app
+spec:
+  ports:
+  - port: 5001        # used in config.yaml
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: quay-app
+# ---
+# kind: Route
+# apiVersion: route.openshift.io/v1
+# metadata:
+#   name: quay
+# spec:
+#   to:
+#     kind: Service
+#     name: quay-app
+#     weight: 100
+#   tls:
+#     termination: edge
+#     insecureEdgeTerminationPolicy: Redirect
+#   wildcardPolicy: None
