@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field, asdict, fields
 from typing import Optional, Dict, Any
 import json
 import yaml
@@ -45,6 +45,17 @@ class ModelMetadata:
     def from_yaml(yaml_str: str) -> 'ModelMetadata':
         data = yaml.safe_load(yaml_str)
         return ModelMetadata(**data)
+    
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> 'ModelMetadata':
+        known_keys = {f.name for f in fields(ModelMetadata)}
+        known_properties = {key: data.get(key) for key in known_keys if key in data}
+        custom_properties = {key: value for key, value in data.items() if key not in known_keys}
+        
+        return ModelMetadata(
+            **known_properties,
+            customProperties=custom_properties
+        )
 
 
 def deserialize_mdfile(file):
