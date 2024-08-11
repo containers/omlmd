@@ -1,4 +1,4 @@
-ca#!/bin/bash
+#!/bin/bash
 
 SCRIPT_DIR="$(dirname "$(realpath "$BASH_SOURCE")")"
 set -e

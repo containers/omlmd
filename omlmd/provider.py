@@ -6,11 +6,10 @@ import oras.provider
 import oras.utils
 from oras.decorator import ensure_container
 from oras.provider import container_type
-import jsonschema
 import oras.schemas
 import logging
 import tempfile
-from typing import Callable, Generator, List, Optional, Tuple, Union
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 

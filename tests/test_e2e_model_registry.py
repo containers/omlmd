@@ -1,17 +1,14 @@
 from omlmd.helpers import Helper
 from omlmd.listener import Event, Listener, PushEvent
-from omlmd.model_metadata import ModelMetadata, deserialize_mdfile
-import tempfile
-import json
-from omlmd.provider import OMLMDRegistry
 import pytest
 from pathlib import Path
 from model_registry import ModelRegistry
+from model_registry.types import RegisteredModel
 from urllib.parse import quote
 from omlmd.helpers import download_file
 
 
-def from_oci_to_kfmr(model_registry: ModelRegistry, push_event: PushEvent, sha: str) -> None:
+def from_oci_to_kfmr(model_registry: ModelRegistry, push_event: PushEvent, sha: str) -> RegisteredModel:
     rm = model_registry.register_model(
         name=push_event.metadata.name,
         uri=f"oci-artifact://{push_event.target}",
@@ -88,7 +85,7 @@ def test_e2e_model_registry_scenario2(tmp_path, target):
     # assuming a model indexed on KF Model Registry ...
     registeredmodel_name = "mnist"
     version_name = "v0.1"
-    rm = model_registry.register_model(
+    _ = model_registry.register_model(
         registeredmodel_name,
         "https://github.com/tarilabs/demo20231212/raw/main/v1.nb20231206162408/mnist.onnx",
         model_format_name="onnx",
@@ -104,7 +101,7 @@ def test_e2e_model_registry_scenario2(tmp_path, target):
     lookup_name = "mnist"
     lookup_version = "v0.1" 
 
-    registered_model = model_registry.get_registered_model(lookup_name)
+    _ = model_registry.get_registered_model(lookup_name)
     model_version = model_registry.get_model_version(lookup_name, lookup_version)
     model_artifact = model_registry.get_model_artifact(lookup_name, lookup_version)
 
