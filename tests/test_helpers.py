@@ -40,7 +40,7 @@ def test_push_event(mocker):
 
     events = []
     class MyListener(Listener):
-        def update(self, event: Event) -> None:
+        def update(self, _, event: Event) -> None:
             events.append(event)
     omlmd.add_listener(MyListener())
 

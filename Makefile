@@ -27,6 +27,10 @@ test:
 test-e2e:
 	poetry run pytest --e2e -s -x -rA
 
+.PHONY: test-e2e-model-registry
+test-e2e-model-registry:
+	poetry run pytest --e2e-model-registry -s -x -rA
+
 .PHONY: lint
 lint: install
 	poetry run ruff check --fix

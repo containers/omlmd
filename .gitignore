@@ -7,7 +7,7 @@ __pycache__
 tmp
 efi-variable-store
 *.onnx
-mr-integration/config/ml-metadata/metadata.sqlite.db
+e2e/model-registry/config/ml-metadata/metadata.sqlite.db
 
 # Generated python library wheels
 dist

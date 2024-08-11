@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from typing import Any
 from omlmd.model_metadata import ModelMetadata
 
 class Listener(ABC):
@@ -7,7 +8,7 @@ class Listener(ABC):
     TODO: not yet settled for multi-method or current single update method.
     """
     @abstractmethod
-    def update(self, event: Event) -> None:
+    def update(self, source: Any, event: Event) -> None:
         """
         Receive update event.
         """

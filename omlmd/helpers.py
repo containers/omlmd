@@ -111,4 +111,4 @@ class Helper:
 
     def notify_listeners(self, event: Event) -> None:
         for listener in self._listeners:
-            listener.update(event)
+            listener.update(self, event)
