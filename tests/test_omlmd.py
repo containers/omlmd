@@ -42,3 +42,21 @@ def test_deserialize_file_yaml():
         f.flush()
         metadata_from_yaml = deserialize_mdfile(f.name)
         assert md_dict == metadata_from_yaml
+
+
+def test_from_dict():
+    data = {
+        "name": "mnist",
+        "description": "Lorem ipsum",
+        "author": "John Doe",
+        "accuracy": .987
+    }
+    md = ModelMetadata(
+        name="mnist",
+        description="Lorem ipsum",
+        author="John Doe",
+        customProperties={
+            "accuracy": .987
+        }
+    )
+    assert ModelMetadata.from_dict(data) == md
