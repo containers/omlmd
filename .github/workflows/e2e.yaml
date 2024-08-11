@@ -8,6 +8,7 @@ on:
 
 jobs:
   e2e-distribution-registry:
+    name: E2E using CNCF Distribution Registry
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -32,10 +33,36 @@ jobs:
     - name: Run E2E tests
       run: |
         make test-e2e
-    - name: Run E2E tests for CLI # only running once using distribution/registry intentionally
+  e2e-cli:
+    name: E2E of CLI (using Distribution Registry)
+    needs:
+      - e2e-distribution-registry # avoid rely on distribution registry for this other e2e if failed.
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9' 
+    - name: Install Poetry
+      run: |
+        pipx install poetry
+    - name: Install dependencies
+      run: |
+        make install
+    - name: Start Kind Cluster
+      uses: helm/kind-action@v1
+      with:
+        cluster_name: kind
+    - name: Start distribution-registry
+      run: |
+        ./e2e/deploy_distribution_registry.sh
+    - name: Run E2E tests for CLI
       run: |
         ./e2e/test_cli.sh
   e2e-zot:
+    name: E2E using CNCF Zot
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -61,6 +88,7 @@ jobs:
       run: |
         make test-e2e
   e2e-quay-lite:
+    name: E2E using Quay (-lite)
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -94,3 +122,34 @@ jobs:
     - name: Run E2E tests
       run: |
         make test-e2e
+  e2e-kubeflow-model-registry:
+    name: E2E of Kubeflow Model Registry (using Distribution Registry)
+    needs:
+      - e2e-distribution-registry # avoid rely on distribution registry for this other e2e if failed.
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9' 
+    - name: Install Poetry
+      run: |
+        pipx install poetry
+    - name: Install dependencies
+      run: |
+        make install
+    - name: Start Kind Cluster
+      uses: helm/kind-action@v1
+      with:
+        cluster_name: kind
+    - name: Start distribution-registry
+      run: |
+        ./e2e/deploy_distribution_registry.sh
+    - name: Deploy Kubeflow Model Registry in KinD cluster
+      run: |
+        ./e2e/deploy_model_registry.sh
+    - name: Run Kubeflow Model Registry E2E tests
+      run: |
+        make test-e2e-model-registry
