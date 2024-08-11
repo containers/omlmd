@@ -5,8 +5,11 @@ import oras.oci
 import oras.provider
 import oras.utils
 from oras.decorator import ensure_container
+from oras.provider import container_type
+import oras.schemas
 import logging
 import tempfile
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -63,3 +66,26 @@ class OMLMDRegistry(oras.provider.Registry):
                         os.rmdir(temp_dir)
                         # print("Temporary directory and its contents have been removed.")
         raise RuntimeError("Unable to locate config layer")
+    
+    @ensure_container
+    def get_manifest_response(
+        self,
+        container: container_type,
+        allowed_media_type: Optional[list] = None,
+        refresh_headers: bool = True,
+    ) -> dict:
+        """
+        like get_manifest but return response,
+        temporary until https://github.com/oras-project/oras-py/pull/146 in a release.
+        """
+        if not allowed_media_type:
+            allowed_media_type = [oras.defaults.default_manifest_media_type]
+        headers = {"Accept": ";".join(allowed_media_type)}
+
+        if not refresh_headers:
+            headers.update(self.headers)
+
+        get_manifest = f"{self.prefix}://{container.manifest_url()}"  # type: ignore
+        response = self.do_request(get_manifest, "GET", headers=headers)
+        self._check_200_response(response)
+        return response

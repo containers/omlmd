@@ -1,7 +1,9 @@
 from omlmd.helpers import Helper
-from omlmd.model_metadata import deserialize_mdfile
+from omlmd.listener import Event, Listener
+from omlmd.model_metadata import ModelMetadata, deserialize_mdfile
 import tempfile
 import json
+from omlmd.provider import OMLMDRegistry
 import pytest
 from pathlib import Path
 
@@ -29,6 +31,31 @@ def test_call_push_using_md_from_file(mocker):
         author="John Doe",
         accuracy=0.987
     )
+
+
+def test_push_event(mocker):
+    registry = OMLMDRegistry()
+    mocker.patch.object(registry, "push", return_value=None)
+    omlmd = Helper(registry)
+
+    events = []
+    class MyListener(Listener):
+        def update(self, _, event: Event) -> None:
+            events.append(event)
+    omlmd.add_listener(MyListener())
+
+    md = {
+        "name": "mnist",
+        "description": "Lorem ipsum",
+        "author": "John Doe",
+        "accuracy": .987
+    }
+    omlmd.push("unexistent:8080/testorgns/ml-iris:v1", "README.md", **md)
+
+    assert len(events) == 1
+    e0 = events[0]
+    assert e0.target == "unexistent:8080/testorgns/ml-iris:v1"
+    assert e0.metadata == ModelMetadata.from_dict(md)
 
 
 @pytest.mark.e2e

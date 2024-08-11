@@ -1,5 +1,6 @@
 from dataclasses import fields
 from typing import Optional, List
+from omlmd.listener import Event, Listener, PushEvent
 from omlmd.model_metadata import ModelMetadata
 from omlmd.provider import OMLMDRegistry
 import os
@@ -21,6 +22,9 @@ def download_file(uri):
 
 
 class Helper:
+
+    _listeners: List[Listener] = []
+
     def __init__(self, registry: Optional[OMLMDRegistry] = None):
         if registry is None:
             self._registry = OMLMDRegistry(insecure=True) # TODO: this is a bit limiting when used from CLI, to be refactored
@@ -61,12 +65,14 @@ class Helper:
         ]
         try:
             # print(target, files, model_metadata.to_annotations_dict())
-            return self._registry.push(
+            result = self._registry.push(
                 target=target,
                 files=files,
                 manifest_annotations=model_metadata.to_annotations_dict(),
                 manifest_config="model_metadata.omlmd.json:application/x-config"
             )
+            self.notify_listeners(PushEvent(target, model_metadata))
+            return result
         finally:
             os.remove("model_metadata.omlmd.json")
             os.remove("model_metadata.omlmd.yaml")
@@ -95,3 +101,14 @@ class Helper:
         configs = map(self.get_config, targets)
         joined = "[" + ", ".join(configs) + "]"
         return joined
+
+
+    def add_listener(self, listener: Listener) -> None:
+        self._listeners.append(listener)
+
+    def remove_listener(self, listener: Listener) -> None:
+        self._listeners.remove(listener)
+
+    def notify_listeners(self, event: Event) -> None:
+        for listener in self._listeners:
+            listener.update(self, event)
