@@ -18,11 +18,10 @@ class ModelMetadata:
     model_format_version: str | None = None
 
     def to_json(self) -> str:
-        return json.dumps(asdict(self), indent=4)
+        return json.dumps(self.to_dict(), indent=4)
 
     def to_dict(self) -> dict[str, Any]:
-        as_json = self.to_json()
-        return json.loads(as_json)
+        return asdict(self)
 
     def to_annotations_dict(self) -> dict[str, str]:
         as_dict = self.to_dict()
@@ -45,7 +44,7 @@ class ModelMetadata:
         return ModelMetadata(**data)
 
     def to_yaml(self) -> str:
-        return yaml.dump(asdict(self), default_flow_style=False)
+        return yaml.dump(self.to_dict(), default_flow_style=False)
 
     @staticmethod
     def from_yaml(yaml_str: str) -> "ModelMetadata":
