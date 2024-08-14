@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import os
 import urllib.request
+from collections.abc import Sequence
 from dataclasses import fields
+from pathlib import Path
 
 from omlmd.listener import Event, Listener, PushEvent
 from omlmd.model_metadata import ModelMetadata
@@ -44,7 +46,7 @@ class Helper:
     def push(
         self,
         target: str,
-        path: str,
+        path: Path | str,
         name: str | None = None,
         description: str | None = None,
         author: str | None = None,
@@ -91,13 +93,15 @@ class Helper:
             os.remove("model_metadata.omlmd.json")
             os.remove("model_metadata.omlmd.yaml")
 
-    def pull(self, target: str, outdir: str, media_types: list[str] | None = None):
+    def pull(
+        self, target: str, outdir: Path | str, media_types: Sequence[str] | None = None
+    ):
         self._registry.download_layers(target, outdir, media_types)
 
     def get_config(self, target: str) -> str:
         return f'{{"reference":"{target}", "config": {self._registry.get_config(target)} }}'  # this assumes OCI Manifest.Config later is JSON (per std spec)
 
-    def crawl(self, targets: list[str]) -> str:
+    def crawl(self, targets: Sequence[str]) -> str:
         configs = map(self.get_config, targets)
         joined = "[" + ", ".join(configs) + "]"
         return joined
