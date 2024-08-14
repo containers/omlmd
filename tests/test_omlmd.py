@@ -1,8 +1,10 @@
-from omlmd.model_metadata import ModelMetadata
-from omlmd.model_metadata import deserialize_mdfile
-import tempfile
 import json
+import tempfile
+
 import yaml
+
+from omlmd.model_metadata import ModelMetadata, deserialize_mdfile
+
 
 def test_dry_run_model_metadata_json_yaml_conversions():
     metadata = ModelMetadata(name="Example Model", author="John Doe")
@@ -23,7 +25,13 @@ def test_dry_run_model_metadata_json_yaml_conversions():
 
 
 def test_deserialize_file_json():
-    md_dict = ModelMetadata(name="Example Model", author="John Doe", model_format_name="onnx", model_format_version="1", customProperties={"accuracy": .987}).to_dict()
+    md_dict = ModelMetadata(
+        name="Example Model",
+        author="John Doe",
+        model_format_name="onnx",
+        model_format_version="1",
+        customProperties={"accuracy": 0.987},
+    ).to_dict()
     json_str = json.dumps(md_dict)
 
     with tempfile.NamedTemporaryFile(delete=True, mode="w") as f:
@@ -34,7 +42,13 @@ def test_deserialize_file_json():
 
 
 def test_deserialize_file_yaml():
-    md_dict = ModelMetadata(name="Example Model", author="John Doe", model_format_name="onnx", model_format_version="1", customProperties={"accuracy": .987}).to_dict()
+    md_dict = ModelMetadata(
+        name="Example Model",
+        author="John Doe",
+        model_format_name="onnx",
+        model_format_version="1",
+        customProperties={"accuracy": 0.987},
+    ).to_dict()
     yaml_str = yaml.dump(md_dict)
 
     with tempfile.NamedTemporaryFile(delete=True, mode="w") as f:
@@ -49,14 +63,12 @@ def test_from_dict():
         "name": "mnist",
         "description": "Lorem ipsum",
         "author": "John Doe",
-        "accuracy": .987
+        "accuracy": 0.987,
     }
     md = ModelMetadata(
         name="mnist",
         description="Lorem ipsum",
         author="John Doe",
-        customProperties={
-            "accuracy": .987
-        }
+        customProperties={"accuracy": 0.987},
     )
     assert ModelMetadata.from_dict(data) == md

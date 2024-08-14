@@ -1,14 +1,17 @@
-from omlmd.helpers import Helper
-from omlmd.listener import Event, Listener, PushEvent
-import pytest
 from pathlib import Path
+from urllib.parse import quote
+
+import pytest
 from model_registry import ModelRegistry
 from model_registry.types import RegisteredModel
-from urllib.parse import quote
-from omlmd.helpers import download_file
+
+from omlmd.helpers import Helper, download_file
+from omlmd.listener import Event, Listener, PushEvent
 
 
-def from_oci_to_kfmr(model_registry: ModelRegistry, push_event: PushEvent, sha: str) -> RegisteredModel:
+def from_oci_to_kfmr(
+    model_registry: ModelRegistry, push_event: PushEvent, sha: str
+) -> RegisteredModel:
     rm = model_registry.register_model(
         name=push_event.metadata.name,
         uri=f"oci-artifact://{push_event.target}",
@@ -27,22 +30,26 @@ def test_e2e_model_registry_scenario1(tmp_path, target):
     """
     Given a ML model and some metadata, to OCI registry, and then to KF Model Registry (at once)
     """
-    model_registry = ModelRegistry("http://localhost", 8081, author="mmortari", is_secure=False)
+    model_registry = ModelRegistry(
+        "http://localhost", 8081, author="mmortari", is_secure=False
+    )
 
     class ListenerForModelRegistry(Listener):
         sha = None
-        rm = None 
+        rm = None
 
         def update(self, source: Helper, event: Event) -> None:
             if isinstance(event, PushEvent):
-                self.sha = source.registry.get_manifest_response(event.target).headers["Docker-Content-Digest"]
+                self.sha = source.registry.get_manifest_response(event.target).headers[
+                    "Docker-Content-Digest"
+                ]
                 print(self.sha)
                 self.rm = from_oci_to_kfmr(model_registry, event, self.sha)
-    
+
     listener = ListenerForModelRegistry()
     omlmd = Helper()
     omlmd.add_listener(listener)
-    
+
     # assuming a model ...
     model_file = Path(__file__).parent / ".." / "README.md"
     # ...with some additional characteristics
@@ -54,7 +61,7 @@ def test_e2e_model_registry_scenario1(tmp_path, target):
         name="mnist",
         description="Lorem ipsum",
         author="John Doe",
-        accuracy=accuracy_value
+        accuracy=accuracy_value,
     )
 
     v = quote(listener.sha)
@@ -66,7 +73,7 @@ def test_e2e_model_registry_scenario1(tmp_path, target):
     mv = model_registry.get_model_version("mnist", v)
     assert mv.description == "Lorem ipsum"
     assert mv.author == "John Doe"
-    assert mv.custom_properties == {'accuracy': 0.987}
+    assert mv.custom_properties == {"accuracy": 0.987}
 
     ma = model_registry.get_model_artifact("mnist", v)
     assert ma.uri == f"oci-artifact://{target}"
@@ -80,7 +87,9 @@ def test_e2e_model_registry_scenario2(tmp_path, target):
     """
     Given some metadata entry in KF model registry, attempt retrieve pointed ML model file asset, then OCI registry
     """
-    model_registry = ModelRegistry("http://localhost", 8081, author="mmortari", is_secure=False)
+    model_registry = ModelRegistry(
+        "http://localhost", 8081, author="mmortari", is_secure=False
+    )
 
     # assuming a model indexed on KF Model Registry ...
     registeredmodel_name = "mnist"
@@ -95,11 +104,11 @@ def test_e2e_model_registry_scenario2(tmp_path, target):
         metadata={
             "accuracy": 3.14,
             "license": "apache-2.0",
-        }
+        },
     )
 
     lookup_name = "mnist"
-    lookup_version = "v0.1" 
+    lookup_version = "v0.1"
 
     _ = model_registry.get_registered_model(lookup_name)
     model_version = model_registry.get_model_version(lookup_name, lookup_version)
@@ -120,7 +129,7 @@ def test_e2e_model_registry_scenario2(tmp_path, target):
         author=model_version.author,
         model_format_name=model_artifact.model_format_name,
         model_format_version=model_artifact.model_format_version,
-        **model_version.custom_properties
+        **model_version.custom_properties,
     )
     # curl http://localhost:5001/v2/testorgns/ml-model-artifact/manifests/v0.1 -H "Accept: application/vnd.oci.image.manifest.v1+json" --verbose
     # tag v0.1 is defined in this test scenario.
