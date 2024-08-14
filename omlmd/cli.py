@@ -23,7 +23,7 @@ def cli():
     pass
 
 
-@click.command()
+@cli.command()
 @plain_http
 @click.argument("target", required=True)
 @click.option("-o", "--output", default=".", show_default=True)
@@ -33,12 +33,12 @@ def pull(plain_http, target, output, media_types):
     Helper(get_OMLMDRegistry(plain_http)).pull(target, output, media_types)
 
 
-@click.group()
+@cli.group()
 def get():
     pass
 
 
-@click.command()
+@get.command()
 @plain_http
 @click.argument("target", required=True)
 def config(plain_http, target):
@@ -46,7 +46,7 @@ def config(plain_http, target):
     click.echo(Helper(get_OMLMDRegistry(plain_http)).get_config(target))
 
 
-@click.command()
+@cli.command()
 @plain_http
 @click.argument("targets", required=True, nargs=-1)
 def crawl(plain_http, targets):
@@ -54,7 +54,7 @@ def crawl(plain_http, targets):
     click.echo(Helper(get_OMLMDRegistry(plain_http)).crawl(targets))
 
 
-@click.command()
+@cli.command()
 @plain_http
 @click.argument("target", required=True)
 @click.argument("path", required=True, type=click.Path())
@@ -66,10 +66,3 @@ def push(plain_http, target, path, metadata):
     logging.basicConfig(level=logging.DEBUG)
     md = deserialize_mdfile(metadata)
     click.echo(Helper(get_OMLMDRegistry(plain_http)).push(target, path, **md))
-
-
-cli.add_command(pull)
-cli.add_command(get)
-get.add_command(config)
-cli.add_command(crawl)
-cli.add_command(push)
