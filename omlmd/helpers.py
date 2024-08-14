@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import os
 import urllib.request
 from dataclasses import fields
-from typing import List, Optional
 
 from omlmd.listener import Event, Listener, PushEvent
 from omlmd.model_metadata import ModelMetadata
@@ -26,9 +27,9 @@ def download_file(uri):
 
 
 class Helper:
-    _listeners: List[Listener] = []
+    _listeners: list[Listener] = []
 
-    def __init__(self, registry: Optional[OMLMDRegistry] = None):
+    def __init__(self, registry: OMLMDRegistry | None = None):
         if registry is None:
             self._registry = OMLMDRegistry(
                 insecure=True
@@ -44,11 +45,11 @@ class Helper:
         self,
         target: str,
         path: str,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        author: Optional[str] = None,
-        model_format_name: Optional[str] = None,
-        model_format_version: Optional[str] = None,
+        name: str | None = None,
+        description: str | None = None,
+        author: str | None = None,
+        model_format_name: str | None = None,
+        model_format_version: str | None = None,
         **kwargs,
     ):
         dataclass_fields = {
@@ -90,13 +91,13 @@ class Helper:
             os.remove("model_metadata.omlmd.json")
             os.remove("model_metadata.omlmd.yaml")
 
-    def pull(self, target: str, outdir: str, media_types: Optional[List[str]] = None):
+    def pull(self, target: str, outdir: str, media_types: list[str] | None = None):
         self._registry.download_layers(target, outdir, media_types)
 
     def get_config(self, target: str) -> str:
         return f'{{"reference":"{target}", "config": {self._registry.get_config(target)} }}'  # this assumes OCI Manifest.Config later is JSON (per std spec)
 
-    def crawl(self, targets: List[str]) -> str:
+    def crawl(self, targets: list[str]) -> str:
         configs = map(self.get_config, targets)
         joined = "[" + ", ".join(configs) + "]"
         return joined

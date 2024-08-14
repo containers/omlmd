@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import logging
 import os
 import tempfile
-from typing import Optional
 
 import oras.defaults
 import oras.oci
@@ -78,7 +79,7 @@ class OMLMDRegistry(oras.provider.Registry):
     def get_manifest_response(
         self,
         container: container_type,
-        allowed_media_type: Optional[list] = None,
+        allowed_media_type: list | None = None,
         refresh_headers: bool = True,
     ) -> dict:
         """

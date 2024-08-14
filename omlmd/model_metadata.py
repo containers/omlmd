@@ -1,19 +1,21 @@
+from __future__ import annotations
+
 import json
 from dataclasses import asdict, dataclass, field, fields
-from typing import Any, Dict, Optional
+from typing import Any
 
 import yaml
 
 
 @dataclass
 class ModelMetadata:
-    name: Optional[str] = None
-    description: Optional[str] = None
-    author: Optional[str] = None
-    customProperties: Optional[Dict[str, Any]] = field(default_factory=dict)
-    uri: Optional[str] = None
-    model_format_name: Optional[str] = None
-    model_format_version: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
+    author: str | None = None
+    customProperties: dict[str, Any] | None = field(default_factory=dict)
+    uri: str | None = None
+    model_format_name: str | None = None
+    model_format_version: str | None = None
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=4)
@@ -51,7 +53,7 @@ class ModelMetadata:
         return ModelMetadata(**data)
 
     @staticmethod
-    def from_dict(data: Dict[str, Any]) -> "ModelMetadata":
+    def from_dict(data: dict[str, Any]) -> "ModelMetadata":
         known_keys = {f.name for f in fields(ModelMetadata)}
         known_properties = {key: data.get(key) for key in known_keys if key in data}
         custom_properties = {
