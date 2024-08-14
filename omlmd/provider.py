@@ -58,7 +58,7 @@ class OMLMDRegistry(oras.provider.Registry):
                 temp_dir = tempfile.mkdtemp()
                 try:
                     with tempfile.NamedTemporaryFile(
-                        dir=temp_dir, mode="w", delete=False
+                        dir=temp_dir, delete=False
                     ) as temp_file:
                         self.download_blob(package, layer["digest"], temp_file.name)
                     with open(temp_file.name, "r") as temp_file_read:
@@ -97,4 +97,3 @@ class OMLMDRegistry(oras.provider.Registry):
         response = self.do_request(get_manifest, "GET", headers=headers)
         self._check_200_response(response)
         return response
-
