@@ -66,16 +66,17 @@ class ModelMetadata:
 def deserialize_mdfile(file):
     with open(file, "r") as file:
         content = file.read()
-        try:
-            return json.loads(content)
-        except json.JSONDecodeError:
-            pass
 
-        try:
-            return yaml.safe_load(content)
-        except yaml.YAMLError:
-            pass
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        pass
 
-        raise ValueError(
-            f"The file at {file} is neither a valid JSON nor a valid YAML file."
-        )
+    try:
+        return yaml.safe_load(content)
+    except yaml.YAMLError:
+        pass
+
+    raise ValueError(
+        f"The file at {file} is neither a valid JSON nor a valid YAML file."
+    )
