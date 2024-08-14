@@ -1,7 +1,7 @@
 site_name: OCI Artifact for ML model & metadata
-site_url: https://tarilabs.github.io/omlmd/
-repo_url: https://github.com/tarilabs/omlmd
-repo_name: tarilabs/omlmd
+site_url: https://containers.github.io/omlmd/
+repo_url: https://github.com/containers/omlmd
+repo_name: containers/omlmd
 theme:
   name: material
   palette:
@@ -25,7 +25,7 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github 
-      link: https://github.com/tarilabs/omlmd
+      link: https://github.com/containers/omlmd
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
