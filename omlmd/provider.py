@@ -1,21 +1,20 @@
+import logging
 import os
+import tempfile
+from typing import Optional
 
 import oras.defaults
 import oras.oci
 import oras.provider
+import oras.schemas
 import oras.utils
 from oras.decorator import ensure_container
 from oras.provider import container_type
-import oras.schemas
-import logging
-import tempfile
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 
 class OMLMDRegistry(oras.provider.Registry):
-
     @ensure_container
     def download_layers(self, package, download_dir, media_types):
         """
@@ -27,15 +26,21 @@ class OMLMDRegistry(oras.provider.Registry):
 
         paths = []
 
-        for layer in manifest.get('layers', []):
-            if media_types is None or len(media_types) == 0 or layer['mediaType'] in media_types:
-                artifact = layer['annotations']['org.opencontainers.image.title']
-                outfile = oras.utils.sanitize_path(download_dir, os.path.join(download_dir, artifact))
-                path = self.download_blob(package, layer['digest'], outfile)
+        for layer in manifest.get("layers", []):
+            if (
+                media_types is None
+                or len(media_types) == 0
+                or layer["mediaType"] in media_types
+            ):
+                artifact = layer["annotations"]["org.opencontainers.image.title"]
+                outfile = oras.utils.sanitize_path(
+                    download_dir, os.path.join(download_dir, artifact)
+                )
+                path = self.download_blob(package, layer["digest"], outfile)
                 paths.append(path)
 
         return paths
-    
+
     @ensure_container
     def get_config(self, package) -> str:
         """
@@ -44,16 +49,18 @@ class OMLMDRegistry(oras.provider.Registry):
         # If you intend to call this function again, you might cache this response
         # for the package of interest.
         manifest = self.get_manifest(package)
-        
-        manifest_config = manifest.get('config', {})
 
-        for layer in manifest.get('layers', []):
+        manifest_config = manifest.get("config", {})
+
+        for layer in manifest.get("layers", []):
             if layer["digest"] == manifest_config["digest"]:
                 temp_dir = tempfile.mkdtemp()
                 try:
-                    with tempfile.NamedTemporaryFile(dir=temp_dir, mode='w', delete=False) as temp_file:
-                        self.download_blob(package, layer['digest'], temp_file.name)
-                    with open(temp_file.name, 'r') as temp_file_read:
+                    with tempfile.NamedTemporaryFile(
+                        dir=temp_dir, mode="w", delete=False
+                    ) as temp_file:
+                        self.download_blob(package, layer["digest"], temp_file.name)
+                    with open(temp_file.name, "r") as temp_file_read:
                         file_content = temp_file_read.read()
                         return file_content
                 finally:
@@ -66,7 +73,7 @@ class OMLMDRegistry(oras.provider.Registry):
                         os.rmdir(temp_dir)
                         # print("Temporary directory and its contents have been removed.")
         raise RuntimeError("Unable to locate config layer")
-    
+
     @ensure_container
     def get_manifest_response(
         self,
@@ -89,3 +96,4 @@ class OMLMDRegistry(oras.provider.Registry):
         response = self.do_request(get_manifest, "GET", headers=headers)
         self._check_200_response(response)
         return response
+

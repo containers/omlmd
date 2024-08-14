@@ -1,7 +1,9 @@
-from dataclasses import dataclass, field, asdict, fields
-from typing import Optional, Dict, Any
 import json
+from dataclasses import asdict, dataclass, field, fields
+from typing import Any, Dict, Optional
+
 import yaml
+
 
 @dataclass
 class ModelMetadata:
@@ -15,11 +17,11 @@ class ModelMetadata:
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=4)
-    
+
     def to_dict(self) -> dict[str, Any]:
         as_json = self.to_json()
         return json.loads(as_json)
-    
+
     def to_annotations_dict(self) -> dict[str, str]:
         as_dict = self.to_dict()
         result = {}
@@ -30,11 +32,13 @@ class ModelMetadata:
             elif v is None:
                 continue
             else:
-                result[f"{k}+json"] = json.dumps(v) # post-fix "+json" for OCI annotation which is a str representing a json
+                result[f"{k}+json"] = json.dumps(
+                    v
+                )  # post-fix "+json" for OCI annotation which is a str representing a json
         return result
 
     @staticmethod
-    def from_json(json_str: str) -> 'ModelMetadata':
+    def from_json(json_str: str) -> "ModelMetadata":
         data = json.loads(json_str)
         return ModelMetadata(**data)
 
@@ -42,33 +46,34 @@ class ModelMetadata:
         return yaml.dump(asdict(self), default_flow_style=False)
 
     @staticmethod
-    def from_yaml(yaml_str: str) -> 'ModelMetadata':
+    def from_yaml(yaml_str: str) -> "ModelMetadata":
         data = yaml.safe_load(yaml_str)
         return ModelMetadata(**data)
-    
+
     @staticmethod
-    def from_dict(data: Dict[str, Any]) -> 'ModelMetadata':
+    def from_dict(data: Dict[str, Any]) -> "ModelMetadata":
         known_keys = {f.name for f in fields(ModelMetadata)}
         known_properties = {key: data.get(key) for key in known_keys if key in data}
-        custom_properties = {key: value for key, value in data.items() if key not in known_keys}
-        
-        return ModelMetadata(
-            **known_properties,
-            customProperties=custom_properties
-        )
+        custom_properties = {
+            key: value for key, value in data.items() if key not in known_keys
+        }
+
+        return ModelMetadata(**known_properties, customProperties=custom_properties)
 
 
 def deserialize_mdfile(file):
-    with open(file, 'r') as file:
+    with open(file, "r") as file:
         content = file.read()
         try:
             return json.loads(content)
         except json.JSONDecodeError:
             pass
-        
+
         try:
             return yaml.safe_load(content)
         except yaml.YAMLError:
             pass
-        
-        raise ValueError(f"The file at {file} is neither a valid JSON nor a valid YAML file.")
+
+        raise ValueError(
+            f"The file at {file} is neither a valid JSON nor a valid YAML file."
+        )

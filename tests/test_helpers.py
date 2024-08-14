@@ -1,11 +1,14 @@
+import json
+import tempfile
+from pathlib import Path
+
+import pytest
+
 from omlmd.helpers import Helper
 from omlmd.listener import Event, Listener
 from omlmd.model_metadata import ModelMetadata, deserialize_mdfile
-import tempfile
-import json
 from omlmd.provider import OMLMDRegistry
-import pytest
-from pathlib import Path
+
 
 def test_call_push_using_md_from_file(mocker):
     helper = Helper()
@@ -15,7 +18,7 @@ def test_call_push_using_md_from_file(mocker):
         "name": "mnist",
         "description": "Lorem ipsum",
         "author": "John Doe",
-        "accuracy": .987
+        "accuracy": 0.987,
     }
     with tempfile.NamedTemporaryFile(delete=True, mode="w") as f:
         f.write(json.dumps(md))
@@ -29,7 +32,7 @@ def test_call_push_using_md_from_file(mocker):
         name="mnist",
         description="Lorem ipsum",
         author="John Doe",
-        accuracy=0.987
+        accuracy=0.987,
     )
 
 
@@ -39,16 +42,18 @@ def test_push_event(mocker):
     omlmd = Helper(registry)
 
     events = []
+
     class MyListener(Listener):
         def update(self, _, event: Event) -> None:
             events.append(event)
+
     omlmd.add_listener(MyListener())
 
     md = {
         "name": "mnist",
         "description": "Lorem ipsum",
         "author": "John Doe",
-        "accuracy": .987
+        "accuracy": 0.987,
     }
     omlmd.push("unexistent:8080/testorgns/ml-iris:v1", "README.md", **md)
 
@@ -67,12 +72,9 @@ def test_e2e_push_pull(tmp_path, target):
         name="mnist",
         description="Lorem ipsum",
         author="John Doe",
-        accuracy=0.987
+        accuracy=0.987,
     )
-    omlmd.pull(
-        target,
-        tmp_path
-    )
+    omlmd.pull(target, tmp_path)
     assert len(list(tmp_path.iterdir())) == 3
 
 
@@ -85,11 +87,7 @@ def test_e2e_push_pull_with_filters(tmp_path, target):
         name="mnist",
         description="Lorem ipsum",
         author="John Doe",
-        accuracy=0.987
+        accuracy=0.987,
     )
-    omlmd.pull(
-        target,
-        tmp_path,
-        media_types=["application/x-mlmodel"]
-    )
+    omlmd.pull(target, tmp_path, media_types=["application/x-mlmodel"])
     assert len(list(tmp_path.iterdir())) == 1
