@@ -28,7 +28,7 @@ scikit-learn = "^1.5.0"
 ipykernel = "^6.29.4"
 markdown-it-py = "^3.0.0"
 model-registry = "^0.2.4a1"
-ruff = "^0.5.7"
+ruff = "^0.6.1"
 mypy = "^1.11.1"
 types-pyyaml = "^6.0.12.20240808"
 
@@ -48,6 +48,9 @@ markers = [
 [tool.ruff]
 target-version = "py39"
 respect-gitignore = true
+
+[tool.ruff.lint.per-file-ignores]
+"*.ipynb" = ["E402"]   # exclude https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/#notebook-behavior from linting, especially for demos.
 
 [tool.mypy]
 python_version = "3.9"
