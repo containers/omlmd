@@ -12,6 +12,7 @@ pip install dist/omlmd-*.whl
 
 echo "Running E2E test for CLI ..."
 
+omlmd push localhost:5001/mmortari/mlartifact:v1 README.md --empty-metadata --plain-http
 omlmd push localhost:5001/mmortari/mlartifact:v1 README.md --metadata tests/data/md.json --plain-http
 
 omlmd pull localhost:5001/mmortari/mlartifact:v1 -o tmp/a --plain-http
