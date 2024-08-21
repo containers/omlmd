@@ -1,16 +1,22 @@
 """Command line interface for OMLMD."""
-
+from __future__ import annotations
 from pathlib import Path
 
 import click
+import cloup
+import logging
 
 from omlmd.helpers import Helper
 from omlmd.model_metadata import deserialize_mdfile
 from omlmd.provider import OMLMDRegistry
 
+
+logger = logging.getLogger(__name__)
+
+
 plain_http = click.option(
     "--plain-http",
-    help="allow insecure connections to registry without SSL check",
+    help="Allow insecure connections to registry without SSL check",
     is_flag=True,
     default=False,
     show_default=True,
@@ -21,9 +27,9 @@ def get_OMLMDRegistry(plain_http: bool) -> OMLMDRegistry:
     return OMLMDRegistry(insecure=plain_http)
 
 
-@click.group()
+@cloup.group()
 def cli():
-    pass
+    logging.basicConfig(level=logging.INFO)
 
 
 @cli.command()
@@ -71,16 +77,21 @@ def crawl(plain_http: bool, targets: tuple[str]):
     required=True,
     type=click.Path(path_type=Path, exists=True, resolve_path=True),
 )
-@click.option(
-    "-m",
-    "--metadata",
-    required=True,
-    type=click.Path(path_type=Path, exists=True, resolve_path=True),
+@cloup.option_group(
+    "Metadata options",
+    cloup.option(
+        "-m",
+        "--metadata",
+        type=click.Path(path_type=Path, exists=True, resolve_path=True),
+        help="Metadata file in JSON or YAML format"
+    ),
+    cloup.option('--empty-metadata', help='Push with empty metadata', is_flag=True),
+    constraint=cloup.constraints.require_one,
 )
-def push(plain_http: bool, target: str, path: Path, metadata: Path):
+def push(plain_http: bool, target: str, path: Path, metadata: Path | None, empty_metadata: bool):
     """Pushes an OCI Artifact containing ML model and metadata, supplying metadata from file as necessary"""
-    import logging
 
-    logging.basicConfig(level=logging.DEBUG)
-    md = deserialize_mdfile(metadata)
+    if empty_metadata:
+        logger.warning(f"Pushing to {target} with empty metadata.")
+    md = deserialize_mdfile(metadata) if metadata else {}
     click.echo(Helper(get_OMLMDRegistry(plain_http)).push(target, path, **md))
