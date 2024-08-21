@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "omlmd"
-version = "0.1.3"
+version = "0.1.4"
 description = "OCI Artifact for ML model & metadata"
 authors = ["Matteo Mortari <matteo.mortari@gmail.com>"]
 readme = "README.md"
 
-[project.urls]
+[tool.poetry.urls]
 Homepage = "https://containers.github.io/omlmd"
 Documentation = "https://containers.github.io/omlmd"
-Repository = "https://github.com/containers/omlmd.git"
+Repository = "https://github.com/containers/omlmd"
 Issues = "https://github.com/containers/omlmd/issues"
 Changelog = "https://github.com/containers/omlmd/releases"
 
