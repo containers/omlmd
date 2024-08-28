@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from omlmd.constants import MIME_APPLICATION_MLMODEL
 from omlmd.helpers import Helper
 from omlmd.listener import Event, Listener
 from omlmd.model_metadata import ModelMetadata, deserialize_mdfile
@@ -89,5 +90,5 @@ def test_e2e_push_pull_with_filters(tmp_path, target):
         author="John Doe",
         accuracy=0.987,
     )
-    omlmd.pull(target, tmp_path, media_types=["application/x-mlmodel"])
+    omlmd.pull(target, tmp_path, media_types=[MIME_APPLICATION_MLMODEL])
     assert len(list(tmp_path.iterdir())) == 1
