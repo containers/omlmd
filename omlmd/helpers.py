@@ -7,7 +7,12 @@ from collections.abc import Sequence
 from dataclasses import fields
 from pathlib import Path
 
-from omlmd.constants import FILENAME_METADATA_JSON, FILENAME_METADATA_YAML, MIME_APPLICATION_CONFIG, MIME_APPLICATION_MLMODEL
+from omlmd.constants import (
+    FILENAME_METADATA_JSON,
+    FILENAME_METADATA_YAML,
+    MIME_APPLICATION_CONFIG,
+    MIME_APPLICATION_MLMODEL,
+)
 from omlmd.listener import Event, Listener, PushEvent
 from omlmd.model_metadata import ModelMetadata
 from omlmd.provider import OMLMDRegistry
