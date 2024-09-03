@@ -7,6 +7,12 @@ from collections.abc import Sequence
 from dataclasses import fields
 from pathlib import Path
 
+from omlmd.constants import (
+    FILENAME_METADATA_JSON,
+    FILENAME_METADATA_YAML,
+    MIME_APPLICATION_CONFIG,
+    MIME_APPLICATION_MLMODEL,
+)
 from omlmd.listener import Event, Listener, PushEvent
 from omlmd.model_metadata import ModelMetadata
 from omlmd.provider import OMLMDRegistry
@@ -65,8 +71,8 @@ class Helper:
         if isinstance(path, str):
             path = Path(path)
 
-        json_meta = path.parent / "model_metadata.omlmd.json"
-        yaml_meta = path.parent / "model_metadata.omlmd.yaml"
+        json_meta = path.parent / FILENAME_METADATA_JSON
+        yaml_meta = path.parent / FILENAME_METADATA_YAML
         if model_metadata.is_empty() and json_meta.exists() and yaml_meta.exists():
             owns_meta_files = False
             logger.warning("No metadata supplied, but reusing md files found in path.")
@@ -81,11 +87,11 @@ class Helper:
             json_meta.write_text(model_metadata.to_json())
             yaml_meta.write_text(model_metadata.to_yaml())
 
-        manifest_cfg = f"{json_meta}:application/x-config"
+        manifest_cfg = f"{json_meta}:{MIME_APPLICATION_CONFIG}"
         files = [
-            f"{path}:application/x-mlmodel",
+            f"{path}:{MIME_APPLICATION_MLMODEL}",
             manifest_cfg,
-            f"{yaml_meta}:application/x-config",
+            f"{yaml_meta}:{MIME_APPLICATION_CONFIG}",
         ]
         try:
             # print(target, files, model_metadata.to_annotations_dict())
