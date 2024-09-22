@@ -1456,13 +1456,13 @@ files = [
 
 [[package]]
 name = "oras"
-version = "0.2.1"
+version = "0.2.21"
 description = "OCI Registry as Storage Python SDK"
 optional = false
 python-versions = "*"
 files = [
-    {file = "oras-0.2.1-py3-none-any.whl", hash = "sha256:a430f9ef70740246289e01cf5a4f551b985c762c661768bce955eb54766918bb"},
-    {file = "oras-0.2.1.tar.gz", hash = "sha256:d4bc1d1acc9b19ee6ac0f0e4b4723349a334d4eb44298a7931464b4b2b79b174"},
+    {file = "oras-0.2.21-py3-none-any.whl", hash = "sha256:4564d55c417b2fd62d5c5578458d1bfbb69f5c527f1c673b803211c50cf284b4"},
+    {file = "oras-0.2.21.tar.gz", hash = "sha256:ea0a4fe180cf825967dd00999c7dec0a2e34cb963c9aa4b270132a811684c1bd"},
 ]
 
 [package.dependencies]
@@ -2567,4 +2567,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "954cb5d27420e36fdf46c85b784d355ba3858f07f31f7155455e1eb7fb65596d"
+content-hash = "c3c3ce57a4d5970244462ebea539e02dc5175cfaf68b495a6dabb66909c342f0"
