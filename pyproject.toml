@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "omlmd"
-version = "0.1.4"
+version = "0.1.5"
 description = "OCI Artifact for ML model & metadata"
 authors = ["Matteo Mortari <matteo.mortari@gmail.com>"]
 readme = "README.md"
@@ -16,7 +16,6 @@ Changelog = "https://github.com/containers/omlmd/releases"
 python = "^3.9"
 oras = "^0.1.30"
 pyyaml = "^6.0.1"
-nbconvert = "^7.16.4"
 click = "^8.1.7"
 cloup = "^3.0.5"
 
@@ -26,6 +25,7 @@ pytest-mock = "^3.14.0"
 jq = "^1.7.0"
 scikit-learn = "^1.5.0"
 ipykernel = "^6.29.4"
+nbconvert = "^7.16.4"
 markdown-it-py = "^3.0.0"
 model-registry = "^0.2.4a1"
 ruff = "^0.6.1"
