@@ -2,6 +2,7 @@ import json
 import subprocess
 import tempfile
 from pathlib import Path
+from hashlib import sha256
 
 import pytest
 
@@ -126,3 +127,33 @@ def test_e2e_push_pull_with_filters(tmp_path, target):
     )
     omlmd.pull(target, tmp_path, media_types=[MIME_APPLICATION_MLMODEL])
     assert len(list(tmp_path.iterdir())) == 1
+
+
+@pytest.mark.e2e
+def test_e2e_push_pull_column(tmp_path, target):
+    omlmd = Helper()
+    md = {
+        "name": "using : in the filename",
+        "description": "Lorem ipsum",
+        "author": "John Doe",
+        "accuracy": 0.987,
+    }
+    content = "Hello, World!"
+    content_sha = sha256(content.encode("utf-8"))
+    here = Path.cwd()
+    temp = here / ("sha256:"+content_sha.hexdigest())
+    print(temp)
+    try:
+        with open(temp, "w") as f:
+            f.write(content)
+
+        omlmd.push(target, temp, **md)
+        omlmd.pull(target, tmp_path)
+        with tmp_path.joinpath(temp.name) as f:
+            pulled = f.read()
+            assert pulled == content
+            pulled_sha = sha256(pulled)
+            assert pulled_sha == content_sha
+    finally:
+        temp.unlink()
+
