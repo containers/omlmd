@@ -139,20 +139,19 @@ def test_e2e_push_pull_column(tmp_path, target):
         "accuracy": 0.987,
     }
     content = "Hello, World!"
-    content_sha = sha256(content.encode("utf-8"))
+    content_sha = sha256(content.encode("utf-8")).hexdigest()
     here = Path.cwd()
-    temp = here / ("sha256:"+content_sha.hexdigest())
-    print(temp)
+    temp = here / ("sha256:"+content_sha)
     try:
         with open(temp, "w") as f:
             f.write(content)
 
         omlmd.push(target, temp, **md)
         omlmd.pull(target, tmp_path)
-        with tmp_path.joinpath(temp.name) as f:
+        with open(tmp_path.joinpath(temp.name), "r") as f:
             pulled = f.read()
             assert pulled == content
-            pulled_sha = sha256(pulled)
+            pulled_sha = sha256(pulled.encode("utf-8")).hexdigest()
             assert pulled_sha == content_sha
     finally:
         temp.unlink()
