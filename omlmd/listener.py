@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-from omlmd.model_metadata import ModelMetadata
+from .model_metadata import ModelMetadata
 
 
 class Listener(ABC):

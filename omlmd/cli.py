@@ -1,15 +1,16 @@
 """Command line interface for OMLMD."""
+
 from __future__ import annotations
+
+import logging
 from pathlib import Path
 
 import click
 import cloup
-import logging
 
-from omlmd.helpers import Helper
-from omlmd.model_metadata import deserialize_mdfile
-from omlmd.provider import OMLMDRegistry
-
+from .helpers import Helper
+from .model_metadata import deserialize_mdfile
+from .provider import OMLMDRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -83,12 +84,18 @@ def crawl(plain_http: bool, targets: tuple[str]):
         "-m",
         "--metadata",
         type=click.Path(path_type=Path, exists=True, resolve_path=True),
-        help="Metadata file in JSON or YAML format"
+        help="Metadata file in JSON or YAML format",
     ),
-    cloup.option('--empty-metadata', help='Push with empty metadata', is_flag=True),
+    cloup.option("--empty-metadata", help="Push with empty metadata", is_flag=True),
     constraint=cloup.constraints.require_one,
 )
-def push(plain_http: bool, target: str, path: Path, metadata: Path | None, empty_metadata: bool):
+def push(
+    plain_http: bool,
+    target: str,
+    path: Path,
+    metadata: Path | None,
+    empty_metadata: bool,
+):
     """Pushes an OCI Artifact containing ML model and metadata, supplying metadata from file as necessary"""
 
     if empty_metadata:

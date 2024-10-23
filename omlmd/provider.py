@@ -4,18 +4,16 @@ import logging
 import os
 import tempfile
 
-import oras.defaults
-import oras.oci
-import oras.provider
-import oras.schemas
-import oras.utils
+from oras import provider
 from oras.decorator import ensure_container
-from oras.provider import container_type
+from oras.defaults import annotation_title as ANNOTATION_TITLE
+from oras.defaults import default_manifest_media_type as DEFAULT_MANIFEST_MEDIA_TYPE
+from oras.utils import sanitize_path
 
 logger = logging.getLogger(__name__)
 
 
-class OMLMDRegistry(oras.provider.Registry):
+class OMLMDRegistry(provider.Registry):
     @ensure_container
     def download_layers(self, package, download_dir, media_types):
         """
@@ -33,8 +31,8 @@ class OMLMDRegistry(oras.provider.Registry):
                 or len(media_types) == 0
                 or layer["mediaType"] in media_types
             ):
-                artifact = layer["annotations"]["org.opencontainers.image.title"]
-                outfile = oras.utils.sanitize_path(
+                artifact = layer["annotations"][ANNOTATION_TITLE]
+                outfile = sanitize_path(
                     download_dir, os.path.join(download_dir, artifact)
                 )
                 path = self.download_blob(package, layer["digest"], outfile)
@@ -78,7 +76,7 @@ class OMLMDRegistry(oras.provider.Registry):
     @ensure_container
     def get_manifest_response(
         self,
-        container: container_type,
+        container: provider.container_type,
         allowed_media_type: list | None = None,
         refresh_headers: bool = True,
     ) -> dict:
@@ -87,7 +85,7 @@ class OMLMDRegistry(oras.provider.Registry):
         temporary until https://github.com/oras-project/oras-py/pull/146 in a release.
         """
         if not allowed_media_type:
-            allowed_media_type = [oras.defaults.default_manifest_media_type]
+            allowed_media_type = [DEFAULT_MANIFEST_MEDIA_TYPE]
         headers = {"Accept": ";".join(allowed_media_type)}
 
         if not refresh_headers:

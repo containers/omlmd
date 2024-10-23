@@ -12,6 +12,9 @@ from omlmd.listener import Event, Listener, PushEvent
 def from_oci_to_kfmr(
     model_registry: ModelRegistry, push_event: PushEvent, sha: str
 ) -> RegisteredModel:
+    assert push_event.metadata.name
+    assert push_event.metadata.model_format_name
+    assert push_event.metadata.model_format_version
     rm = model_registry.register_model(
         name=push_event.metadata.name,
         uri=f"oci-artifact://{push_event.target}",
@@ -35,8 +38,8 @@ def test_e2e_model_registry_scenario1(tmp_path, target):
     )
 
     class ListenerForModelRegistry(Listener):
-        sha = None
-        rm = None
+        sha: str
+        rm: RegisteredModel
 
         def update(self, source: Helper, event: Event) -> None:
             if isinstance(event, PushEvent):
@@ -67,15 +70,18 @@ def test_e2e_model_registry_scenario1(tmp_path, target):
     v = quote(listener.sha)
 
     rm = model_registry.get_registered_model("mnist")
+    assert rm
     assert rm.id == listener.rm.id
     assert rm.name == "mnist"
 
     mv = model_registry.get_model_version("mnist", v)
+    assert mv
     assert mv.description == "Lorem ipsum"
     assert mv.author == "John Doe"
     assert mv.custom_properties == {"accuracy": 0.987}
 
     ma = model_registry.get_model_artifact("mnist", v)
+    assert ma
     assert ma.uri == f"oci-artifact://{target}"
 
     # curl http://localhost:5001/v2/testorgns/ml-model-artifact/manifests/v1 -H "Accept: application/vnd.oci.image.manifest.v1+json" --verbose
@@ -112,7 +118,9 @@ def test_e2e_model_registry_scenario2(tmp_path, target):
 
     _ = model_registry.get_registered_model(lookup_name)
     model_version = model_registry.get_model_version(lookup_name, lookup_version)
+    assert model_version
     model_artifact = model_registry.get_model_artifact(lookup_name, lookup_version)
+    assert model_artifact
 
     file_from_mr = download_file(model_artifact.uri)
 
