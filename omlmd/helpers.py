@@ -4,7 +4,7 @@ import logging
 import os
 import urllib.request
 from collections.abc import Sequence
-from dataclasses import fields
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 
 from .constants import (
@@ -26,20 +26,18 @@ def download_file(uri: str):
     return file_name
 
 
+@dataclass
 class Helper:
-    _listeners: list[Listener] = []
+    registry: OMLMDRegistry = (
+        field(  # TODO: this is a bit limiting when used from CLI, to be refactored
+            default_factory=lambda: OMLMDRegistry(insecure=True)
+        )
+    )
+    _listeners: list[Listener] = field(default_factory=list)
 
-    def __init__(self, registry: OMLMDRegistry | None = None):
-        if registry is None:
-            self._registry = OMLMDRegistry(
-                insecure=True
-            )  # TODO: this is a bit limiting when used from CLI, to be refactored
-        else:
-            self._registry = registry
-
-    @property
-    def registry(self):
-        return self._registry
+    @classmethod
+    def from_plain(cls, insecure: bool):
+        return cls(OMLMDRegistry(insecure=insecure))
 
     def push(
         self,
@@ -94,14 +92,20 @@ class Helper:
         ]
         try:
             # print(target, files, model_metadata.to_annotations_dict())
-            result = self._registry.push(
+            result = self.registry.push(
                 target=target,
                 files=files,
                 manifest_annotations=model_metadata.to_annotations_dict(),
                 manifest_config=manifest_cfg,
                 do_chunked=True,
             )
-            self.notify_listeners(PushEvent(target, model_metadata))
+            self.notify_listeners(
+                PushEvent(
+                    result.headers["Docker-Content-Digest"],
+                    target,
+                    model_metadata,
+                )
+            )
             return result
         finally:
             if owns_meta_files:
@@ -111,10 +115,10 @@ class Helper:
     def pull(
         self, target: str, outdir: Path | str, media_types: Sequence[str] | None = None
     ):
-        self._registry.download_layers(target, outdir, media_types)
+        self.registry.download_layers(target, outdir, media_types)
 
     def get_config(self, target: str) -> str:
-        return f'{{"reference":"{target}", "config": {self._registry.get_config(target)} }}'  # this assumes OCI Manifest.Config later is JSON (per std spec)
+        return f'{{"reference":"{target}", "config": {self.registry.get_config(target)} }}'  # this assumes OCI Manifest.Config later is JSON (per std spec)
 
     def crawl(self, targets: Sequence[str]) -> str:
         configs = map(self.get_config, targets)

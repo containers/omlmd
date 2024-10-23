@@ -10,7 +10,6 @@ import cloup
 
 from .helpers import Helper
 from .model_metadata import deserialize_mdfile
-from .provider import OMLMDRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +21,6 @@ plain_http = click.option(
     default=False,
     show_default=True,
 )
-
-
-def get_OMLMDRegistry(plain_http: bool) -> OMLMDRegistry:
-    return OMLMDRegistry(insecure=plain_http)
 
 
 @cloup.group()
@@ -46,7 +41,7 @@ def cli():
 @click.option("--media-types", "-m", multiple=True, default=[])
 def pull(plain_http: bool, target: str, output: Path, media_types: tuple[str]):
     """Pulls an OCI Artifact containing ML model and metadata, filtering if necessary."""
-    Helper(get_OMLMDRegistry(plain_http)).pull(target, output, media_types)
+    Helper.from_plain(plain_http).pull(target, output, media_types)
 
 
 @cli.group()
@@ -59,7 +54,7 @@ def get():
 @click.argument("target", required=True)
 def config(plain_http: bool, target: str):
     """Outputs configuration of the given OCI Artifact for ML model and metadata."""
-    click.echo(Helper(get_OMLMDRegistry(plain_http)).get_config(target))
+    click.echo(Helper.from_plain(plain_http).get_config(target))
 
 
 @cli.command()
@@ -67,7 +62,7 @@ def config(plain_http: bool, target: str):
 @click.argument("targets", required=True, nargs=-1)
 def crawl(plain_http: bool, targets: tuple[str]):
     """Crawls configuration for the given list of OCI Artifact for ML model and metadata."""
-    click.echo(Helper(get_OMLMDRegistry(plain_http)).crawl(targets))
+    click.echo(Helper.from_plain(plain_http).crawl(targets))
 
 
 @cli.command()
@@ -101,4 +96,4 @@ def push(
     if empty_metadata:
         logger.warning(f"Pushing to {target} with empty metadata.")
     md = deserialize_mdfile(metadata) if metadata else {}
-    click.echo(Helper(get_OMLMDRegistry(plain_http)).push(target, path, **md))
+    click.echo(Helper.from_plain(plain_http).push(target, path, **md))

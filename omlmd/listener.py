@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import typing as t
 from abc import ABC, abstractmethod
-from typing import Any
+from dataclasses import dataclass
 
 from .model_metadata import ModelMetadata
 
@@ -12,19 +13,19 @@ class Listener(ABC):
     """
 
     @abstractmethod
-    def update(self, source: Any, event: Event) -> None:
+    def update(self, source: t.Any, event: Event) -> None:
         """
         Receive update event.
         """
         pass
 
 
-class Event:
+class Event(ABC):
     pass
 
 
+@dataclass
 class PushEvent(Event):
-    def __init__(self, target: str, metadata: ModelMetadata):
-        # TODO: cannot just receive yet the push sha, waiting for: https://github.com/oras-project/oras-py/pull/146 in a release.
-        self.target = target
-        self.metadata = metadata
+    sha: str
+    target: str
+    metadata: ModelMetadata
