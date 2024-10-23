@@ -43,11 +43,8 @@ def test_e2e_model_registry_scenario1(tmp_path, target):
 
         def update(self, source: Helper, event: Event) -> None:
             if isinstance(event, PushEvent):
-                self.sha = source.registry.get_manifest_response(event.target).headers[
-                    "Docker-Content-Digest"
-                ]
-                print(self.sha)
-                self.rm = from_oci_to_kfmr(model_registry, event, self.sha)
+                self.sha = event.sha
+                self.rm = from_oci_to_kfmr(model_registry, event, event.sha)
 
     listener = ListenerForModelRegistry()
     omlmd = Helper()

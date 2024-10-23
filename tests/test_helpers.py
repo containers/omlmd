@@ -42,7 +42,13 @@ def test_call_push_using_md_from_file(mocker):
 
 def test_push_event(mocker):
     registry = OMLMDRegistry()
-    mocker.patch.object(registry, "push", return_value=None)
+    m = mocker.MagicMock()
+    m.headers = {"Docker-Content-Digest": "sha256:123"}
+    mocker.patch.object(
+        registry,
+        "push",
+        return_value=m,
+    )
     omlmd = Helper(registry)
 
     events = []
