@@ -28,7 +28,7 @@ def download_file(uri: str):
 
 @dataclass
 class Helper:
-    registry: OMLMDRegistry = (
+    _registry: OMLMDRegistry = (
         field(  # TODO: this is a bit limiting when used from CLI, to be refactored
             default_factory=lambda: OMLMDRegistry(insecure=True)
         )
@@ -36,7 +36,7 @@ class Helper:
     _listeners: list[Listener] = field(default_factory=list)
 
     @classmethod
-    def from_plain(cls, insecure: bool):
+    def from_default_registry(cls, insecure: bool):
         return cls(OMLMDRegistry(insecure=insecure))
 
     def push(
@@ -92,7 +92,7 @@ class Helper:
         ]
         try:
             # print(target, files, model_metadata.to_annotations_dict())
-            result = self.registry.push(
+            result = self._registry.push(
                 target=target,
                 files=files,
                 manifest_annotations=model_metadata.to_annotations_dict(),
@@ -115,10 +115,10 @@ class Helper:
     def pull(
         self, target: str, outdir: Path | str, media_types: Sequence[str] | None = None
     ):
-        self.registry.download_layers(target, outdir, media_types)
+        self._registry.download_layers(target, outdir, media_types)
 
     def get_config(self, target: str) -> str:
-        return f'{{"reference":"{target}", "config": {self.registry.get_config(target)} }}'  # this assumes OCI Manifest.Config later is JSON (per std spec)
+        return f'{{"reference":"{target}", "config": {self._registry.get_config(target)} }}'  # this assumes OCI Manifest.Config later is JSON (per std spec)
 
     def crawl(self, targets: Sequence[str]) -> str:
         configs = map(self.get_config, targets)

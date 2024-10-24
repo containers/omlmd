@@ -26,6 +26,6 @@ class Event(ABC):
 
 @dataclass
 class PushEvent(Event):
-    sha: str
+    digest: str
     target: str
     metadata: ModelMetadata
