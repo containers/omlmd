@@ -61,6 +61,8 @@ def test_e2e_model_registry_scenario1(tmp_path, target):
         name="mnist",
         description="Lorem ipsum",
         author="John Doe",
+        model_format_name="onnx",
+        model_format_version="1",
         accuracy=accuracy_value,
     )
 
