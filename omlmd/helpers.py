@@ -6,6 +6,7 @@ import urllib.request
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
+from textwrap import dedent
 
 from .constants import (
     FILENAME_METADATA_JSON,
@@ -55,10 +56,18 @@ class Helper:
             logger.debug(f"{json_meta}, {yaml_meta}")
             with open(json_meta, "r") as f:
                 model_metadata = ModelMetadata.from_json(f.read())
-        elif (p := json_meta).exists() or (p := yaml_meta).exists():
-            raise RuntimeError(
-                f"File '{p}' already exists. Aborting TODO: demonstrator."
-            )
+        elif meta_files := [f for f in (json_meta, yaml_meta) if f.exists()]:
+            file_list = "\n".join([str(f) for f in meta_files])
+            err = dedent(f"""
+OMLMD intermediate metadata files found at '{path.parent}'.
+Cannot resolve with conflicting keyword args: {kwargs}.
+You can reuse the existing metadata by omitting any keywords.
+If that was NOT intended, please REMOVE the files under
+{file_list}
+from your environment before re-running.
+
+Note for advanced users: if merging keys with existing metadata is desired, you should create a Feature Request upstream: https://github.com/containers/omlmd""")
+            raise RuntimeError(err)
         else:
             model_metadata = ModelMetadata.from_dict(kwargs)
             json_meta.write_text(model_metadata.to_json())
