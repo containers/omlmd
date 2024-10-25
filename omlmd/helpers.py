@@ -28,10 +28,8 @@ def download_file(uri: str):
 
 @dataclass
 class Helper:
-    _registry: OMLMDRegistry = (
-        field(  # TODO: this is a bit limiting when used from CLI, to be refactored
-            default_factory=lambda: OMLMDRegistry(insecure=True)
-        )
+    _registry: OMLMDRegistry = field(
+        default_factory=lambda: OMLMDRegistry(insecure=True)
     )
     _listeners: list[Listener] = field(default_factory=list)
 
@@ -99,13 +97,7 @@ class Helper:
                 manifest_config=manifest_cfg,
                 do_chunked=True,
             )
-            self.notify_listeners(
-                PushEvent(
-                    result.headers["Docker-Content-Digest"],
-                    target,
-                    model_metadata,
-                )
-            )
+            self.notify_listeners(PushEvent(result, target, model_metadata))
             return result
         finally:
             if owns_meta_files:

@@ -4,6 +4,8 @@ import typing as t
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+import requests
+
 from .model_metadata import ModelMetadata
 
 
@@ -26,6 +28,13 @@ class Event(ABC):
 
 @dataclass
 class PushEvent(Event):
-    digest: str
+    response: requests.Response
     target: str
     metadata: ModelMetadata
+
+    @property
+    def ok(self) -> bool:
+        return self.response.status_code == 200
+
+    def get_digest(self) -> str:
+        return self.response.headers["Docker-Content-Digest"] if self.ok else ""

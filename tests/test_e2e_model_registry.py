@@ -43,8 +43,8 @@ def test_e2e_model_registry_scenario1(tmp_path, target):
 
         def update(self, source: Helper, event: Event) -> None:
             if isinstance(event, PushEvent):
-                self.sha = event.digest
-                self.rm = from_oci_to_kfmr(model_registry, event, event.digest)
+                self.sha = event.get_digest()
+                self.rm = from_oci_to_kfmr(model_registry, event, self.sha)
 
     listener = ListenerForModelRegistry()
     omlmd = Helper()
