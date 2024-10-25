@@ -4,7 +4,7 @@ import logging
 import os
 import urllib.request
 from collections.abc import Sequence
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from .constants import (
@@ -41,34 +41,15 @@ class Helper:
         self,
         target: str,
         path: Path | str,
-        name: str | None = None,
-        description: str | None = None,
-        author: str | None = None,
-        model_format_name: str | None = None,
-        model_format_version: str | None = None,
         **kwargs,
     ):
-        dataclass_fields = {
-            f.name for f in fields(ModelMetadata)
-        }  # avoid anything specified in kwargs which would collide
-        custom_properties = {
-            k: v for k, v in kwargs.items() if k not in dataclass_fields
-        }
-        model_metadata = ModelMetadata(
-            name=name,
-            description=description,
-            author=author,
-            customProperties=custom_properties,
-            model_format_name=model_format_name,
-            model_format_version=model_format_version,
-        )
         owns_meta_files = True
         if isinstance(path, str):
             path = Path(path)
 
         json_meta = path.parent / FILENAME_METADATA_JSON
         yaml_meta = path.parent / FILENAME_METADATA_YAML
-        if model_metadata.is_empty() and json_meta.exists() and yaml_meta.exists():
+        if not kwargs and json_meta.exists() and yaml_meta.exists():
             owns_meta_files = False
             logger.warning("No metadata supplied, but reusing md files found in path.")
             logger.debug(f"{json_meta}, {yaml_meta}")
@@ -79,6 +60,7 @@ class Helper:
                 f"File '{p}' already exists. Aborting TODO: demonstrator."
             )
         else:
+            model_metadata = ModelMetadata.from_dict(kwargs)
             json_meta.write_text(model_metadata.to_json())
             yaml_meta.write_text(model_metadata.to_yaml())
 

@@ -72,26 +72,3 @@ def test_from_dict():
         customProperties={"accuracy": 0.987},
     )
     assert ModelMetadata.from_dict(data) == md
-
-
-def test_is_empty():
-    md = ModelMetadata(
-        name="mnist",
-        description="Lorem ipsum",
-        author="John Doe",
-        customProperties={"accuracy": 0.987},
-    )
-    assert not md.is_empty()
-
-    md = ModelMetadata()
-    assert md.is_empty()
-
-    md = ModelMetadata(
-        customProperties={"accuracy": 0.987},
-    )
-    assert not md.is_empty()
-
-    md = ModelMetadata(
-        name="mnist",
-    )
-    assert not md.is_empty()
