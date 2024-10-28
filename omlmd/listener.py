@@ -28,13 +28,12 @@ class Event(ABC):
 
 @dataclass
 class PushEvent(Event):
-    response: requests.Response
+    digest: str
     target: str
     metadata: ModelMetadata
 
-    @property
-    def ok(self) -> bool:
-        return self.response.status_code == 200
-
-    def get_digest(self) -> str:
-        return self.response.headers["Docker-Content-Digest"] if self.ok else ""
+    @classmethod
+    def from_response(
+        cls, response: requests.Response, target: str, metadata: ModelMetadata
+    ) -> "PushEvent":
+        return cls(response.headers["Docker-Content-Digest"], target, metadata)

@@ -97,7 +97,9 @@ class Helper:
                 manifest_config=manifest_cfg,
                 do_chunked=True,
             )
-            self.notify_listeners(PushEvent(result, target, model_metadata))
+            self.notify_listeners(
+                PushEvent.from_response(result, target, model_metadata)
+            )
             return result
         finally:
             if owns_meta_files:
