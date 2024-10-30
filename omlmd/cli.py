@@ -1,15 +1,15 @@
 """Command line interface for OMLMD."""
+
 from __future__ import annotations
+
+import logging
 from pathlib import Path
 
 import click
 import cloup
-import logging
 
-from omlmd.helpers import Helper
-from omlmd.model_metadata import deserialize_mdfile
-from omlmd.provider import OMLMDRegistry
-
+from .helpers import Helper
+from .model_metadata import deserialize_mdfile
 
 logger = logging.getLogger(__name__)
 
@@ -21,10 +21,6 @@ plain_http = click.option(
     default=False,
     show_default=True,
 )
-
-
-def get_OMLMDRegistry(plain_http: bool) -> OMLMDRegistry:
-    return OMLMDRegistry(insecure=plain_http)
 
 
 @cloup.group()
@@ -45,7 +41,7 @@ def cli():
 @click.option("--media-types", "-m", multiple=True, default=[])
 def pull(plain_http: bool, target: str, output: Path, media_types: tuple[str]):
     """Pulls an OCI Artifact containing ML model and metadata, filtering if necessary."""
-    Helper(get_OMLMDRegistry(plain_http)).pull(target, output, media_types)
+    Helper.from_default_registry(plain_http).pull(target, output, media_types)
 
 
 @cli.group()
@@ -58,7 +54,7 @@ def get():
 @click.argument("target", required=True)
 def config(plain_http: bool, target: str):
     """Outputs configuration of the given OCI Artifact for ML model and metadata."""
-    click.echo(Helper(get_OMLMDRegistry(plain_http)).get_config(target))
+    click.echo(Helper.from_default_registry(plain_http).get_config(target))
 
 
 @cli.command()
@@ -66,7 +62,7 @@ def config(plain_http: bool, target: str):
 @click.argument("targets", required=True, nargs=-1)
 def crawl(plain_http: bool, targets: tuple[str]):
     """Crawls configuration for the given list of OCI Artifact for ML model and metadata."""
-    click.echo(Helper(get_OMLMDRegistry(plain_http)).crawl(targets))
+    click.echo(Helper.from_default_registry(plain_http).crawl(targets))
 
 
 @cli.command()
@@ -83,15 +79,21 @@ def crawl(plain_http: bool, targets: tuple[str]):
         "-m",
         "--metadata",
         type=click.Path(path_type=Path, exists=True, resolve_path=True),
-        help="Metadata file in JSON or YAML format"
+        help="Metadata file in JSON or YAML format",
     ),
-    cloup.option('--empty-metadata', help='Push with empty metadata', is_flag=True),
+    cloup.option("--empty-metadata", help="Push with empty metadata", is_flag=True),
     constraint=cloup.constraints.require_one,
 )
-def push(plain_http: bool, target: str, path: Path, metadata: Path | None, empty_metadata: bool):
+def push(
+    plain_http: bool,
+    target: str,
+    path: Path,
+    metadata: Path | None,
+    empty_metadata: bool,
+):
     """Pushes an OCI Artifact containing ML model and metadata, supplying metadata from file as necessary"""
 
     if empty_metadata:
         logger.warning(f"Pushing to {target} with empty metadata.")
     md = deserialize_mdfile(metadata) if metadata else {}
-    click.echo(Helper(get_OMLMDRegistry(plain_http)).push(target, path, **md))
+    click.echo(Helper.from_default_registry(plain_http).push(target, path, **md))

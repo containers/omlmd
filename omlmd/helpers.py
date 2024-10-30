@@ -4,19 +4,18 @@ import logging
 import os
 import urllib.request
 from collections.abc import Sequence
-from dataclasses import fields
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 
-from omlmd.constants import (
+from .constants import (
     FILENAME_METADATA_JSON,
     FILENAME_METADATA_YAML,
     MIME_APPLICATION_CONFIG,
     MIME_APPLICATION_MLMODEL,
 )
-from omlmd.listener import Event, Listener, PushEvent
-from omlmd.model_metadata import ModelMetadata
-from omlmd.provider import OMLMDRegistry
-
+from .listener import Event, Listener, PushEvent
+from .model_metadata import ModelMetadata
+from .provider import OMLMDRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -27,20 +26,16 @@ def download_file(uri: str):
     return file_name
 
 
+@dataclass
 class Helper:
-    _listeners: list[Listener] = []
+    _registry: OMLMDRegistry = field(
+        default_factory=lambda: OMLMDRegistry(insecure=True)
+    )
+    _listeners: list[Listener] = field(default_factory=list)
 
-    def __init__(self, registry: OMLMDRegistry | None = None):
-        if registry is None:
-            self._registry = OMLMDRegistry(
-                insecure=True
-            )  # TODO: this is a bit limiting when used from CLI, to be refactored
-        else:
-            self._registry = registry
-
-    @property
-    def registry(self):
-        return self._registry
+    @classmethod
+    def from_default_registry(cls, insecure: bool):
+        return cls(OMLMDRegistry(insecure=insecure))
 
     def push(
         self,
@@ -102,7 +97,9 @@ class Helper:
                 manifest_config=manifest_cfg,
                 do_chunked=True,
             )
-            self.notify_listeners(PushEvent(target, model_metadata))
+            self.notify_listeners(
+                PushEvent.from_response(result, target, model_metadata)
+            )
             return result
         finally:
             if owns_meta_files:
