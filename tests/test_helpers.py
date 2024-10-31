@@ -1,5 +1,7 @@
+import io
 import json
 import subprocess
+import tarfile
 import tempfile
 import typing as t
 from hashlib import sha256
@@ -7,11 +9,17 @@ from pathlib import Path
 
 import pytest
 
-from omlmd.constants import MIME_APPLICATION_MLMODEL
+from omlmd.constants import MIME_BLOB
 from omlmd.helpers import Helper
 from omlmd.listener import Event, Listener
 from omlmd.model_metadata import ModelMetadata, deserialize_mdfile
 from omlmd.provider import OMLMDRegistry
+
+
+def untar(tar: Path, out: Path):
+    out.write_bytes(
+        t.cast(io.BufferedReader, tarfile.open(tar, "r:*").extractfile(tar.stem)).read()
+    )
 
 
 def test_call_push_using_md_from_file(mocker):
@@ -100,10 +108,31 @@ def test_push_pull_chunked(tmp_path, target):
 
         omlmd.push(target, temp, **md)
         omlmd.pull(target, tmp_path)
-        assert len(list(tmp_path.iterdir())) == 3
-        assert tmp_path.joinpath(temp.name).stat().st_size == base_size
+        files = list(tmp_path.iterdir())
+        print(files)
+        assert len(files) == 3
+        print(tmp_path)
+        out = tmp_path.joinpath(temp.name)
+        untar(out.with_suffix(".tar"), out)
+        assert temp.stat().st_size == base_size
     finally:
         temp.unlink()
+
+
+@pytest.mark.e2e
+def test_e2e_push_pull_as_artifact(tmp_path, target):
+    omlmd = Helper()
+    omlmd.push(
+        target,
+        Path(__file__).parent / ".." / "README.md",
+        as_artifact=True,
+        name="mnist",
+        description="Lorem ipsum",
+        author="John Doe",
+        accuracy=0.987,
+    )
+    omlmd.pull(target, tmp_path)
+    assert len(list(tmp_path.iterdir())) == 3
 
 
 @pytest.mark.e2e
@@ -132,7 +161,7 @@ def test_e2e_push_pull_with_filters(tmp_path, target):
         author="John Doe",
         accuracy=0.987,
     )
-    omlmd.pull(target, tmp_path, media_types=[MIME_APPLICATION_MLMODEL])
+    omlmd.pull(target, tmp_path, media_types=[MIME_BLOB])
     assert len(list(tmp_path.iterdir())) == 1
 
 
@@ -155,10 +184,11 @@ def test_e2e_push_pull_column(tmp_path, target):
 
         omlmd.push(target, temp, **md)
         omlmd.pull(target, tmp_path)
-        with open(tmp_path.joinpath(temp.name), "r") as f:
-            pulled = f.read()
-            assert pulled == content
-            pulled_sha = sha256(pulled.encode("utf-8")).hexdigest()
-            assert pulled_sha == content_sha
+        out = tmp_path.joinpath(temp.name)
+        untar(out.with_suffix(".tar"), out)
+        pulled = out.read_text()
+        assert pulled == content
+        pulled_sha = sha256(pulled.encode("utf-8")).hexdigest()
+        assert pulled_sha == content_sha
     finally:
         temp.unlink()

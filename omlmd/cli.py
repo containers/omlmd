@@ -73,6 +73,11 @@ def crawl(plain_http: bool, targets: tuple[str]):
     required=True,
     type=click.Path(path_type=Path, exists=True, resolve_path=True),
 )
+@click.option(
+    "--as-artifact",
+    is_flag=True,
+    help="Push as an artifact (default is as a blob)",
+)
 @cloup.option_group(
     "Metadata options",
     cloup.option(
@@ -88,6 +93,7 @@ def push(
     plain_http: bool,
     target: str,
     path: Path,
+    as_artifact: bool,
     metadata: Path | None,
     empty_metadata: bool,
 ):
@@ -96,4 +102,6 @@ def push(
     if empty_metadata:
         logger.warning(f"Pushing to {target} with empty metadata.")
     md = deserialize_mdfile(metadata) if metadata else {}
-    click.echo(Helper.from_default_registry(plain_http).push(target, path, **md))
+    click.echo(
+        Helper.from_default_registry(plain_http).push(target, path, as_artifact, **md)
+    )

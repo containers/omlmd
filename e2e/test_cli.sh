@@ -25,7 +25,7 @@ else
 fi
 
 DIR="tmp/b"
-omlmd pull localhost:5001/mmortari/mlartifact:v1 -o "$DIR" --media-types "application/x-mlmodel" --plain-http
+omlmd pull localhost:5001/mmortari/mlartifact:v1 -o "$DIR" --media-types "application/vnd.oci.image.layer.v1.tar" --plain-http
 file_count=$(find "$DIR" -type f | wc -l)
 if [ "$file_count" -eq 1 ]; then
     echo "Expected 1 file in $DIR, ok."
