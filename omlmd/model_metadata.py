@@ -17,9 +17,6 @@ class ModelMetadata:
     model_format_name: str | None = None
     model_format_version: str | None = None
 
-    def to_json(self) -> str:
-        return json.dumps(self.to_dict(), indent=4)
-
     def to_dict(self) -> dict[str, t.Any]:
         return asdict(self)
 
@@ -39,25 +36,10 @@ class ModelMetadata:
         return result
 
     @staticmethod
-    def from_json(json_str: str) -> "ModelMetadata":
-        data = json.loads(json_str)
-        return ModelMetadata(**data)
-
-    def to_yaml(self) -> str:
-        return yaml.dump(self.to_dict(), default_flow_style=False)
-
-    @staticmethod
-    def from_yaml(yaml_str: str) -> "ModelMetadata":
-        data = yaml.safe_load(yaml_str)
-        return ModelMetadata(**data)
-
-    @staticmethod
     def from_dict(data: dict[str, t.Any]) -> "ModelMetadata":
         known_keys = {f.name for f in fields(ModelMetadata)}
-        known_properties = {key: data.get(key) for key in known_keys if key in data}
-        custom_properties = {
-            key: value for key, value in data.items() if key not in known_keys
-        }
+        known_properties = {key: data.pop(key) for key in known_keys if key in data}
+        custom_properties = {key: value for key, value in data.items()}
 
         return ModelMetadata(**known_properties, customProperties=custom_properties)
 
