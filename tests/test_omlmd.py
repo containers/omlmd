@@ -9,7 +9,7 @@ from omlmd.model_metadata import ModelMetadata, deserialize_mdfile
 def test_dry_run_model_metadata_json_yaml_conversions():
     metadata = ModelMetadata(name="Example Model", author="John Doe")
     json_str = metadata.to_json()
-    yaml_str = metadata.to_yaml()
+    yaml_str = yaml.dump(metadata.to_dict(), default_flow_style=False)
 
     print("JSON representation:\n", json_str)
     print("YAML representation:\n", yaml_str)

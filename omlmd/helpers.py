@@ -10,7 +10,6 @@ from textwrap import dedent
 
 from .constants import (
     FILENAME_METADATA_JSON,
-    FILENAME_METADATA_YAML,
     MIME_APPLICATION_CONFIG,
     MIME_APPLICATION_MLMODEL,
 )
@@ -44,40 +43,34 @@ class Helper:
         path: Path | str,
         **kwargs,
     ):
-        owns_meta_files = True
+        owns_meta = True
         if isinstance(path, str):
             path = Path(path)
 
-        json_meta = path.parent / FILENAME_METADATA_JSON
-        yaml_meta = path.parent / FILENAME_METADATA_YAML
-        if not kwargs and json_meta.exists() and yaml_meta.exists():
-            owns_meta_files = False
-            logger.warning("No metadata supplied, but reusing md files found in path.")
-            logger.debug(f"{json_meta}, {yaml_meta}")
-            with open(json_meta, "r") as f:
+        meta_path = path.parent / FILENAME_METADATA_JSON
+        if not kwargs and meta_path.exists():
+            owns_meta = False
+            logger.warning("Reusing intermediate metadata files.")
+            logger.debug(f"{meta_path}")
+            with open(meta_path, "r") as f:
                 model_metadata = ModelMetadata.from_json(f.read())
-        elif meta_files := [f for f in (json_meta, yaml_meta) if f.exists()]:
-            file_list = "\n".join([str(f) for f in meta_files])
+        elif meta_path.exists():
             err = dedent(f"""
-OMLMD intermediate metadata files found at '{path.parent}'.
+OMLMD intermediate metadata files found at '{meta_path}'.
 Cannot resolve with conflicting keyword args: {kwargs}.
 You can reuse the existing metadata by omitting any keywords.
-If that was NOT intended, please REMOVE the files under
-{file_list}
-from your environment before re-running.
+If that was NOT intended, please REMOVE that file from your environment before re-running.
 
 Note for advanced users: if merging keys with existing metadata is desired, you should create a Feature Request upstream: https://github.com/containers/omlmd""")
             raise RuntimeError(err)
         else:
             model_metadata = ModelMetadata.from_dict(kwargs)
-            json_meta.write_text(model_metadata.to_json())
-            yaml_meta.write_text(model_metadata.to_yaml())
+            meta_path.write_text(model_metadata.to_json())
 
-        manifest_cfg = f"{json_meta}:{MIME_APPLICATION_CONFIG}"
+        config = f"{meta_path}:{MIME_APPLICATION_CONFIG}"
         files = [
             f"{path}:{MIME_APPLICATION_MLMODEL}",
-            manifest_cfg,
-            f"{yaml_meta}:{MIME_APPLICATION_CONFIG}",
+            config,
         ]
         try:
             # print(target, files, model_metadata.to_annotations_dict())
@@ -85,7 +78,7 @@ Note for advanced users: if merging keys with existing metadata is desired, you 
                 target=target,
                 files=files,
                 manifest_annotations=model_metadata.to_annotations_dict(),
-                manifest_config=manifest_cfg,
+                manifest_config=config,
                 do_chunked=True,
             )
             self.notify_listeners(
@@ -93,9 +86,8 @@ Note for advanced users: if merging keys with existing metadata is desired, you 
             )
             return result
         finally:
-            if owns_meta_files:
-                json_meta.unlink()
-                yaml_meta.unlink()
+            if owns_meta:
+                meta_path.unlink()
 
     def pull(
         self, target: str, outdir: Path | str, media_types: Sequence[str] | None = None
