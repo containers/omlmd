@@ -17,9 +17,6 @@ class ModelMetadata:
     model_format_name: str | None = None
     model_format_version: str | None = None
 
-    def to_json(self) -> str:
-        return json.dumps(self.to_dict(), indent=4)
-
     def to_dict(self) -> dict[str, t.Any]:
         return asdict(self)
 
@@ -37,16 +34,6 @@ class ModelMetadata:
                     v
                 )  # post-fix "+json" for OCI annotation which is a str representing a json
         return result
-
-    @staticmethod
-    def from_json(json_str: str) -> "ModelMetadata":
-        data = json.loads(json_str)
-        return ModelMetadata(**data)
-
-    @staticmethod
-    def from_yaml(yaml_str: str) -> "ModelMetadata":
-        data = yaml.safe_load(yaml_str)
-        return ModelMetadata(**data)
 
     @staticmethod
     def from_dict(data: dict[str, t.Any]) -> "ModelMetadata":
