@@ -1,23 +1,40 @@
 from __future__ import annotations
 
+import json
 import logging
 import os
+import platform
+import tarfile
 import urllib.request
 from collections.abc import Sequence
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field
 from pathlib import Path
+from textwrap import dedent
 
 from .constants import (
     FILENAME_METADATA_JSON,
-    FILENAME_METADATA_YAML,
-    MIME_APPLICATION_CONFIG,
+    MIME_APPLICATION_MLMETADATA,
     MIME_APPLICATION_MLMODEL,
+    MIME_BLOB,
+    MIME_MANIFEST_CONFIG,
 )
 from .listener import Event, Listener, PushEvent
 from .model_metadata import ModelMetadata
 from .provider import OMLMDRegistry
 
 logger = logging.getLogger(__name__)
+
+
+def get_arch() -> str:
+    mac = platform.machine()
+    if mac == "x86_64":
+        return "amd64"
+    if mac == "arm64":
+        return "arm64"
+    if mac == "aarch64":
+        return "arm64"
+    msg = f"Unsupported architecture: {platform.machine()}"
+    raise NotImplementedError(msg)
 
 
 def download_file(uri: str):
@@ -41,60 +58,82 @@ class Helper:
         self,
         target: str,
         path: Path | str,
-        name: str | None = None,
-        description: str | None = None,
-        author: str | None = None,
-        model_format_name: str | None = None,
-        model_format_version: str | None = None,
+        as_artifact: bool = False,
         **kwargs,
     ):
-        dataclass_fields = {
-            f.name for f in fields(ModelMetadata)
-        }  # avoid anything specified in kwargs which would collide
-        custom_properties = {
-            k: v for k, v in kwargs.items() if k not in dataclass_fields
-        }
-        model_metadata = ModelMetadata(
-            name=name,
-            description=description,
-            author=author,
-            customProperties=custom_properties,
-            model_format_name=model_format_name,
-            model_format_version=model_format_version,
-        )
-        owns_meta_files = True
+        owns_meta = True
         if isinstance(path, str):
             path = Path(path)
 
-        json_meta = path.parent / FILENAME_METADATA_JSON
-        yaml_meta = path.parent / FILENAME_METADATA_YAML
-        if model_metadata.is_empty() and json_meta.exists() and yaml_meta.exists():
-            owns_meta_files = False
-            logger.warning("No metadata supplied, but reusing md files found in path.")
-            logger.debug(f"{json_meta}, {yaml_meta}")
-            with open(json_meta, "r") as f:
-                model_metadata = ModelMetadata.from_json(f.read())
-        elif (p := json_meta).exists() or (p := yaml_meta).exists():
-            raise RuntimeError(
-                f"File '{p}' already exists. Aborting TODO: demonstrator."
-            )
-        else:
-            json_meta.write_text(model_metadata.to_json())
-            yaml_meta.write_text(model_metadata.to_yaml())
+        meta_path = path.parent / FILENAME_METADATA_JSON
+        if not kwargs and meta_path.exists():
+            owns_meta = False
+            logger.warning("Reusing intermediate metadata files.")
+            logger.debug(f"{meta_path}")
+            model_metadata = ModelMetadata.from_dict(json.loads(meta_path.read_bytes()))
+        elif meta_path.exists():
+            err = dedent(f"""
+OMLMD intermediate metadata files found at '{meta_path}'.
+Cannot resolve with conflicting keyword args: {kwargs}.
+You can reuse the existing metadata by omitting any keywords.
+If that was NOT intended, please REMOVE that file from your environment before re-running.
 
-        manifest_cfg = f"{json_meta}:{MIME_APPLICATION_CONFIG}"
-        files = [
-            f"{path}:{MIME_APPLICATION_MLMODEL}",
-            manifest_cfg,
-            f"{yaml_meta}:{MIME_APPLICATION_CONFIG}",
-        ]
+Note for advanced users: if merging keys with existing metadata is desired, you should create a Feature Request upstream: https://github.com/containers/omlmd""")
+            raise RuntimeError(err)
+        else:
+            model_metadata = ModelMetadata.from_dict(kwargs)
+            meta_path.write_text(json.dumps(model_metadata.to_dict()))
+
+        owns_model_tar = False
+        owns_md_tar = False
+        manifest_path = path.parent / "manifest.json"
+        model_tar = None
+        meta_tar = None
+        if not as_artifact:
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "architecture": get_arch(),
+                        "os": "linux",
+                    }
+                )
+            )
+            config = f"{manifest_path}:{MIME_MANIFEST_CONFIG}"
+            model_tar = path.parent / f"{path.stem}.tar"
+            meta_tar = path.parent / f"{meta_path.stem}.tar"
+            if not model_tar.exists():
+                owns_model_tar = True
+                with tarfile.open(model_tar, "w") as tf:
+                    tf.add(path, arcname=path.name)
+            if not meta_tar.exists():
+                owns_md_tar = True
+                with tarfile.open(meta_tar, "w:gz") as tf:
+                    tf.add(meta_path, arcname=meta_path.name)
+            files = [
+                f"{model_tar}:{MIME_BLOB}",
+                f"{meta_tar}:{MIME_BLOB}+gzip",
+            ]
+        else:
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "artifactType": MIME_APPLICATION_MLMODEL,
+                    }
+                )
+            )
+            config = f"{manifest_path}:{MIME_APPLICATION_MLMODEL}"
+            files = [
+                f"{path}:{MIME_APPLICATION_MLMODEL}",
+                f"{meta_path}:{MIME_APPLICATION_MLMETADATA}",
+            ]
+
         try:
             # print(target, files, model_metadata.to_annotations_dict())
             result = self._registry.push(
                 target=target,
                 files=files,
                 manifest_annotations=model_metadata.to_annotations_dict(),
-                manifest_config=manifest_cfg,
+                manifest_config=config,
                 do_chunked=True,
             )
             self.notify_listeners(
@@ -102,9 +141,14 @@ class Helper:
             )
             return result
         finally:
-            if owns_meta_files:
-                json_meta.unlink()
-                yaml_meta.unlink()
+            if owns_meta:
+                meta_path.unlink()
+            if owns_model_tar:
+                assert isinstance(model_tar, Path)
+                model_tar.unlink()
+            if owns_md_tar:
+                assert isinstance(meta_tar, Path)
+                meta_tar.unlink()
 
     def pull(
         self, target: str, outdir: Path | str, media_types: Sequence[str] | None = None
