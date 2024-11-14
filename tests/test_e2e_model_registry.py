@@ -77,7 +77,9 @@ def test_e2e_model_registry_scenario1(tmp_path, target):
     assert mv
     assert mv.description == "Lorem ipsum"
     assert mv.author == "John Doe"
-    assert mv.custom_properties == {"accuracy": 0.987}
+    assert mv.custom_properties == {
+        "accuracy": accuracy_value,
+    }
 
     ma = model_registry.get_model_artifact("mnist", v)
     assert ma
