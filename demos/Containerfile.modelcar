@@ -1,0 +1,9 @@
+FROM ghcr.io/oras-project/oras:v1.2.0 as builder
+
+RUN oras pull quay.io/mmortari/ml-iris:v1 
+ 
+
+FROM busybox
+
+RUN mkdir /models && chmod 775 /models
+COPY --from=builder /workspace /models/
