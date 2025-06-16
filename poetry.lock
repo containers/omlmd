@@ -1630,14 +1630,14 @@ files = [
 
 [[package]]
 name = "oras"
-version = "0.2.33"
+version = "0.2.37"
 description = "OCI Registry as Storage Python SDK"
 optional = false
 python-versions = "*"
 groups = ["main"]
 files = [
-    {file = "oras-0.2.33-py3-none-any.whl", hash = "sha256:832a08b7b4d0bf6f962b1e644f58bf3277a71154c759c825eaf87d28aa6e904a"},
-    {file = "oras-0.2.33.tar.gz", hash = "sha256:ecb7e55970c864c23f9412b788ec4a5f1935dbf742d8af2135fdbd1a0293e638"},
+    {file = "oras-0.2.37-py3-none-any.whl", hash = "sha256:5973f52287887813dad6affede51d7a699f443dacad1e98e5f50634ec80c9f37"},
+    {file = "oras-0.2.37.tar.gz", hash = "sha256:7e48f6b8cda08c11f612c16e2bdafc346b884be3a83b924495b5e43d34af0e1f"},
 ]
 
 [package.dependencies]
@@ -1645,8 +1645,9 @@ jsonschema = "*"
 requests = "*"
 
 [package.extras]
-all = ["docker (==5.0.1)", "jsonschema", "pytest (>=4.6.2)", "requests"]
+all = ["boto3 (>=1.33.0)", "docker (==5.0.1)", "jsonschema", "pytest (>=4.6.2)", "requests"]
 docker = ["docker (==5.0.1)"]
+ecr = ["boto3 (>=1.33.0)"]
 tests = ["pytest (>=4.6.2)"]
 
 [[package]]
@@ -3025,4 +3026,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.9"
-content-hash = "e69ed059d7fe4e14af2bd5bcf19f1037fb39b391f446e829118ec7867d0d5557"
+content-hash = "bcb410e37dcf902d54b0d44b670af871efa4c03aa9a8b37d5a9460739cbbfddf"
