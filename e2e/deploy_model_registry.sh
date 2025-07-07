@@ -12,15 +12,39 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 kubectl create namespace kubeflow
-kubectl apply -k "https://github.com/kubeflow/model-registry/manifests/kustomize/overlays/db?ref=v0.2.4-alpha"
+kubectl apply -n kubeflow -k "https://github.com/kubeflow/model-registry/manifests/kustomize/overlays/db?ref=v0.2.20"
 
 sleep 1
 kubectl get -n kubeflow deployments
 
-echo "Waiting for Deployment..."
-kubectl wait --for=condition=available -n kubeflow deployment/model-registry-deployment --timeout=1m
+echo "Waiting for Deployments..."
+
+echo "Waiting for Model Registry DB deployment..."
+if ! kubectl wait --for=condition=available -n kubeflow deployment/model-registry-db --timeout=2m; then
+  kubectl get -n kubeflow deployments
+  kubectl events -A
+  kubectl describe deployment/model-registry-db -n kubeflow
+  kubectl logs deployment/model-registry-db -n kubeflow
+  exit 1
+fi
+echo "Model Registry DB deployment is ready."
+
+echo "=== Model Registry DB Logs ==="
+kubectl logs -n kubeflow deployment/model-registry-db
+
+echo "Waiting for Model Registry deployment..."
+if ! kubectl wait --for=condition=available -n kubeflow deployment/model-registry-deployment --timeout=1m; then
+  echo "Model Registry deployment failed or timed out."
+  kubectl get -n kubeflow deployments
+  echo "=== Model Registry Deployment Logs ==="
+  kubectl logs -n kubeflow deployment/model-registry-deployment
+  exit 1
+fi
+echo "Model Registry deployment is ready."
+
+echo "=== Model Registry Deployment Logs ==="
 kubectl logs -n kubeflow deployment/model-registry-deployment
-echo "Deployment looks ready."
+echo "Deployments status checked."
 
 echo "Starting port-forward..."
 kubectl port-forward svc/model-registry-service -n kubeflow 8081:8080 &
