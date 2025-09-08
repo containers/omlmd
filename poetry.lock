@@ -1257,14 +1257,14 @@ typing-extensions = {version = "*", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "model-registry"
-version = "0.2.22"
+version = "0.3.0"
 description = "Client for Kubeflow Model Registry"
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["dev"]
 files = [
-    {file = "model_registry-0.2.22-py3-none-any.whl", hash = "sha256:bd19048ae9ae98aa3b8fc29c605577c93eafd0223a4da66b0695448235aa56c8"},
-    {file = "model_registry-0.2.22.tar.gz", hash = "sha256:1044e62dbb13165e930bb8319b57027a6a6d86d62987416f9a248a377981d41e"},
+    {file = "model_registry-0.3.0-py3-none-any.whl", hash = "sha256:52d61abfe815ff71c58b5f0e14333539324cc52f1ba03642db19387f838058c8"},
+    {file = "model_registry-0.3.0.tar.gz", hash = "sha256:6d87cb6355a4981264080bf3b70b4210a915b514c31d5a211fc479c99d68d434"},
 ]
 
 [package.dependencies]
@@ -3019,4 +3019,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.9"
-content-hash = "6afc6c23659ce8bf726786dfa53cd49f0732ceb3cd9651bd8bd91c9ffeb46884"
+content-hash = "8896a63d3372d9815008d9a2311fc6f57ceb7670e102db2ccf2c55158f615e26"
