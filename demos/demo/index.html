@@ -1,0 +1,956 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://containers.github.io/omlmd/demos/demo/">
+      
+      
+        <link rel="prev" href="../../overview/">
+      
+      
+        <link rel="next" href="../demo2/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Demo 1: Introduction - OCI Artifact for ML model & metadata</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#demo-1-introduction" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OCI Artifact for ML model &amp; metadata" class="md-header__button md-logo" aria-label="OCI Artifact for ML model & metadata" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OCI Artifact for ML model & metadata
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Demo 1: Introduction
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/containers/omlmd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    containers/omlmd
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OCI Artifact for ML model &amp; metadata" class="md-nav__button md-logo" aria-label="OCI Artifact for ML model & metadata" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    OCI Artifact for ML model & metadata
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/containers/omlmd" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    containers/omlmd
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Demos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Demos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Demo 1: Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Demo 2: more on ModelCar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Demo 3: Signature and Attestation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use Cases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appendixes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Appendixes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendixes/appendix-links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    All links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+
+
+
+  
+  
+
+
+<!-- this file is partially generated from the notebooks -->
+
+<h1 id="demo-1-introduction">Demo 1: Introduction</h1>
+<div align="center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/W4GwIRPXE8E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+<p>This is a work in progress demonstrator; after showing a very simple ML training, we package the ML model assets and relevant metadata as OCI Artifact.
+We push the resulting artifact to a specified OCI repository.
+We demonstrate how to pull the artifact using standard clients or a customized client.
+We demonstrate how to build on top of the provided features, to provide new capabilities, such as custom Pull or local Crawling of metadata for Querying.</p>
+<h1 id="model-training">Model Training</h1>
+<p>We simulate (poorly!) a ML model training and we persist the resulting model in a joblib file.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">joblib</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">datasets</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_iris</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stratify</span> <span class="o">=</span> <span class="n">y</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">svc_linear</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">svc_linear</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">y_pred</span> <span class="o">=</span> <span class="n">svc_linear</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">accuracy_value</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;accuracy:&quot;</span><span class="p">,</span> <span class="n">accuracy_value</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>accuracy: 0.9777777777777777
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;model.joblib&quot;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>  
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>   <span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">svc_linear</span><span class="p">,</span> <span class="n">fo</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="o">%</span><span class="n">ls</span> <span class="o">-</span><span class="n">lA</span> <span class="n">model</span><span class="o">*</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>-rw-r--r--@ 1 mmortari  staff  3299 Jun 17 10:22 model.joblib
+</code></pre></div>
+<h1 id="oci-artifact">OCI Artifact</h1>
+<p>Let's leverage OCI-Artifact and OCI-Dist to warehouse our ML model and its metadata.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">omlmd.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Helper</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">omlmd</span> <span class="o">=</span> <span class="n">Helper</span><span class="p">()</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">omlmd</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="s2">&quot;localhost:8080/matteo/ml-artifact:latest&quot;</span><span class="p">,</span> <span class="s2">&quot;model.joblib&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Model Example&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="s2">&quot;Apache-2.0&quot;</span><span class="p">,</span> <span class="n">accuracy</span><span class="o">=</span><span class="n">accuracy_value</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Successfully pushed localhost:8080/matteo/ml-artifact:latest
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Zot</th>
+<th>Quay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="" src="../imgs/Screenshot%202024-06-07%20at%2018.12.04.png" /></td>
+<td><img alt="" src="../imgs/Screenshot%202024-06-12%20at%2010.02.44.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>Demonstrate <em>pull</em> with <strong>vanilla</strong> OCI-compliant clients</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">oras.provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">oras_registry</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">(</span><span class="n">insecure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">oras_registry</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;localhost:8080/matteo/ml-artifact:latest&quot;</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="s2">&quot;tmp/a&quot;</span><span class="p">)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="o">%</span><span class="n">ls</span> <span class="o">-</span><span class="n">lA</span> <span class="n">tmp</span><span class="o">/</span><span class="n">a</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>total 24
+-rw-r--r--@ 1 mmortari  staff  3299 Jun 17 10:22 model.joblib
+-rw-r--r--@ 1 mmortari  staff   269 Jun 17 10:22 model_metadata.oml.json
+-rw-r--r--@ 1 mmortari  staff   187 Jun 17 10:22 model_metadata.oml.yaml
+</code></pre></div>
+<p>Demonstrate <em>custom pull</em>, filtering to download only ML artifact and nothing else</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">omlmd</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;localhost:8080/matteo/ml-artifact:latest&quot;</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="s2">&quot;tmp/b&quot;</span><span class="p">,</span> <span class="n">media_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;application/x-artifact&quot;</span><span class="p">])</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="o">%</span><span class="n">ls</span> <span class="o">-</span><span class="n">lA</span> <span class="n">tmp</span><span class="o">/</span><span class="n">b</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>total 8
+-rw-r--r--@ 1 mmortari  staff  3299 Jun 17 10:22 model.joblib
+</code></pre></div>
+<p>Demonstrate custom fetch of metadata layer (following OCI-Artifact conventions)</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">omlmd</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;localhost:8080/matteo/ml-artifact:latest&quot;</span><span class="p">))</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>{&quot;reference&quot;:&quot;localhost:8080/matteo/ml-artifact:latest&quot;, &quot;config&quot;: {
+    &quot;name&quot;: &quot;Model Example&quot;,
+    &quot;description&quot;: null,
+    &quot;author&quot;: &quot;John Doe&quot;,
+    &quot;customProperties&quot;: {
+        &quot;license&quot;: &quot;Apache-2.0&quot;,
+        &quot;accuracy&quot;: 0.9777777777777777
+    },
+    &quot;uri&quot;: null,
+    &quot;model_format_name&quot;: null,
+    &quot;model_format_version&quot;: null
+} }
+</code></pre></div>
+<h1 id="crawl-oci-artifacts">Crawl OCI-Artifacts</h1>
+<p>Demonstrator of client-side crawling.
+This is only a demonstrator, working on analogous concept server-side (beyond OCI specification, but integrating with it).</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># data prep (simulated): store in OCI 3 tags, with different `accuracy` metadata</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">omlmd</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="s2">&quot;localhost:8080/matteo/ml-artifact:v1&quot;</span><span class="p">,</span> <span class="s2">&quot;model.joblib&quot;</span><span class="p">,</span> <span class="n">accuracy</span><span class="o">=</span><span class="mf">.85</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Model Example&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="s2">&quot;Apache-2.0&quot;</span><span class="p">)</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">omlmd</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="s2">&quot;localhost:8080/matteo/ml-artifact:v2&quot;</span><span class="p">,</span> <span class="s2">&quot;model.joblib&quot;</span><span class="p">,</span> <span class="n">accuracy</span><span class="o">=</span><span class="mf">.90</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Model Example&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="s2">&quot;Apache-2.0&quot;</span><span class="p">)</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">omlmd</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="s2">&quot;localhost:8080/matteo/ml-artifact:v3&quot;</span><span class="p">,</span> <span class="s2">&quot;model.joblib&quot;</span><span class="p">,</span> <span class="n">accuracy</span><span class="o">=</span><span class="mf">.95</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Model Example&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="s2">&quot;Apache-2.0&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Successfully pushed localhost:8080/matteo/ml-artifact:v1
+Successfully pushed localhost:8080/matteo/ml-artifact:v2
+Successfully pushed localhost:8080/matteo/ml-artifact:v3
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Zot</th>
+<th>Quay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="" src="../imgs/Screenshot%202024-06-07%20at%2018.12.29.png" /></td>
+<td><img alt="" src="../imgs/Screenshot%202024-06-12%20at%2010.07.10.png" /></td>
+</tr>
+</tbody>
+</table>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">crawl_result</span> <span class="o">=</span> <span class="n">omlmd</span><span class="o">.</span><span class="n">crawl</span><span class="p">([</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="s2">&quot;localhost:8080/matteo/ml-artifact:v1&quot;</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="s2">&quot;localhost:8080/matteo/ml-artifact:v2&quot;</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="s2">&quot;localhost:8080/matteo/ml-artifact:v3&quot;</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">])</span>
+</span></code></pre></div>
+<p>Demonstrate integration of crawling results with querying (in this case using jQ)</p>
+<blockquote>
+<p>Of the crawled ML OCI artifacts, which one exhibit the max accuracy?</p>
+</blockquote>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jq</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">jq</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span> <span class="s2">&quot;max_by(.config.customProperties.accuracy).reference&quot;</span> <span class="p">)</span><span class="o">.</span><span class="n">input_text</span><span class="p">(</span><span class="n">crawl_result</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>&#39;localhost:8080/matteo/ml-artifact:v3&#39;
+</code></pre></div>
+<h1 id="from-ml-model-in-oci-artifact-to-modelcar">from ML model in OCI Artifact → to ModelCar</h1>
+<p>ModelCar's Dockerfile:</p>
+<div class="language-dockerfile highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">FROM</span><span class="w"> </span><span class="s">ghcr.io/oras-project/oras:v1.2.0</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s">builder</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">RUN</span><span class="w"> </span>oras<span class="w"> </span>pull<span class="w"> </span>quay.io/mmortari/ml-iris:v1<span class="w"> </span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="k">FROM</span><span class="w"> </span><span class="s">busybox</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">RUN</span><span class="w"> </span>mkdir<span class="w"> </span>/models<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span><span class="m">775</span><span class="w"> </span>/models
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/workspace<span class="w"> </span>/models/
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="err">!</span><span class="n">podman</span> <span class="n">build</span> <span class="o">--</span><span class="n">load</span> <span class="o">-</span><span class="n">t</span> <span class="n">mmortari</span><span class="o">/</span><span class="n">ml</span><span class="o">-</span><span class="n">iris</span><span class="p">:</span><span class="n">v1</span><span class="o">-</span><span class="n">modelcar</span> <span class="o">-</span><span class="n">f</span> <span class="n">Containerfile</span><span class="o">.</span><span class="n">modelcar</span> <span class="o">.</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1"># !podman push --tls-verify=false mmortari/ml-iris:v1-modelcar localhost:8080/matteo/ml-iris:v1-modelcar</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="err">!</span><span class="n">podman</span> <span class="n">push</span> <span class="n">mmortari</span><span class="o">/</span><span class="n">ml</span><span class="o">-</span><span class="n">iris</span><span class="p">:</span><span class="n">v1</span><span class="o">-</span><span class="n">modelcar</span> <span class="n">quay</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">mmortari</span><span class="o">/</span><span class="n">ml</span><span class="o">-</span><span class="n">iris</span><span class="p">:</span><span class="n">v1</span><span class="o">-</span><span class="n">modelcar</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[1/2] STEP 1/2: FROM ghcr.io/oras-project/oras:v1.2.0 AS builder
+[1/2] STEP 2/2: RUN oras pull quay.io/mmortari/ml-iris:v1 
+--&gt; Using cache 7feb1e5fb58481657bd017001bd1f8ce7f930041f522c29ffcee44bc346bf99c
+--&gt; 7feb1e5fb584
+[2/2] STEP 1/3: FROM busybox
+[2/2] STEP 2/3: RUN mkdir /models &amp;&amp; chmod 775 /models
+--&gt; Using cache 4c41b98df27a711498d7e585a7e6a13cc660dc86dc2a30f45fd4d869e5b65091
+--&gt; 4c41b98df27a
+[2/2] STEP 3/3: COPY --from=builder /workspace /models/
+--&gt; Using cache b6a5b03fd625e3a49fd6bd104d250c6efe1be53f48f23db54a1714513e9eb954
+[2/2] COMMIT mmortari/ml-iris:v1-modelcar
+--&gt; b6a5b03fd625
+Successfully tagged localhost/mmortari/ml-iris:v1-modelcar
+Successfully tagged localhost/matteo/ml-iris:v1-modelcar
+b6a5b03fd625e3a49fd6bd104d250c6efe1be53f48f23db54a1714513e9eb954
+Getting image source signatures
+Copying blob sha256:e5744b46b6c629c1861eb438aca266a1a170a519f080db5885cc4e672cd78d1b
+Copying blob sha256:8e13bc96641a6983e79c9569873afe5800b0efb3993c3302763b9f5bc5fb8739
+Copying blob sha256:a1d8fcd2d8014f56ebfd7710bc9487fe01364b8007acca13d75a0127e7f8247a
+Copying config sha256:b6a5b03fd625e3a49fd6bd104d250c6efe1be53f48f23db54a1714513e9eb954
+Writing manifest to image destination
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>local Quay</th>
+<th>Quay.io</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="image.png" src="../imgs/Screenshot%202024-06-17%20at%2014.05.02.png" /></td>
+<td><img alt="" src="../imgs/Screenshot%202024-06-24%20at%2013.12.25.png" /></td>
+</tr>
+</tbody>
+</table>
+<h1 id="from-modelcar-to-bootc-image-linuxservermodelcar">from ModelCar → to BootC image (linux+server+model[/car])</h1>
+<p>bootc containerfile (snippet):</p>
+<div class="language-Dockerfile highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">FROM</span><span class="w"> </span><span class="s">quay.io/centos-bootc/centos-bootc:stream9</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c"># ...</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c"># Add quadlet files to setup system to automatically run AI application on boot</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">COPY</span><span class="w"> </span>quadlet/sklearn.kube<span class="w"> </span>quadlet/sklearn.yaml<span class="w"> </span>/usr/share/containers/systemd/
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c"># Prepull the model, model_server &amp; application images to populate the system.</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="c"># Comment the pull commands to keep bootc image smaller.</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="c"># The quadlet .image file added above pulls following images with service startup</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="k">RUN</span><span class="w"> </span>podman<span class="w"> </span>pull<span class="w"> </span>--root<span class="w"> </span>/usr/lib/containers/storage<span class="w"> </span>docker.io/kserve/sklearnserver:latest
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="k">RUN</span><span class="w"> </span>podman<span class="w"> </span>pull<span class="w"> </span>--root<span class="w"> </span>/usr/lib/containers/storage<span class="w"> </span>quay.io/mmortari/ml-iris:v1-modelcar
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="c"># ...</span>
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="err">!</span><span class="n">podman</span> <span class="n">build</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="s2">&quot;SSHPUBKEY=$(cat ~/.ssh/id_rsa.pub)&quot;</span> \
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>       <span class="o">--</span><span class="n">security</span><span class="o">-</span><span class="n">opt</span> <span class="n">label</span><span class="o">=</span><span class="n">disable</span> \
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>       <span class="o">--</span><span class="n">cap</span><span class="o">-</span><span class="n">add</span> <span class="n">SYS_ADMIN</span> \
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>       <span class="o">-</span><span class="n">f</span> <span class="n">Containerfile</span><span class="o">.</span><span class="n">bootc</span> \
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>       <span class="o">-</span><span class="n">t</span> <span class="n">mmortari</span><span class="o">/</span><span class="n">ml</span><span class="o">-</span><span class="n">iris</span><span class="p">:</span><span class="n">v1</span><span class="o">-</span><span class="n">bootc</span> <span class="o">.</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="err">!</span><span class="n">podman</span> <span class="n">push</span> <span class="n">mmortari</span><span class="o">/</span><span class="n">ml</span><span class="o">-</span><span class="n">iris</span><span class="p">:</span><span class="n">v1</span><span class="o">-</span><span class="n">bootc</span> <span class="n">quay</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">mmortari</span><span class="o">/</span><span class="n">ml</span><span class="o">-</span><span class="n">iris</span><span class="p">:</span><span class="n">v1</span><span class="o">-</span><span class="n">bootc</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>STEP 1/9: FROM quay.io/centos-bootc/centos-bootc:stream9
+STEP 2/9: ARG SSHPUBKEY
+--&gt; Using cache 523580821612112581608763e3943eb40817089f87b690dac045459c0b14fb99
+--&gt; 523580821612
+STEP 3/9: RUN set -eu; mkdir -p /usr/ssh &amp;&amp;     echo &#39;AuthorizedKeysFile /usr/ssh/%u.keys .ssh/authorized_keys .ssh/authorized_keys2&#39; &gt;&gt; /etc/ssh/sshd_config.d/30-auth-system.conf &amp;&amp;     echo ${SSHPUBKEY} &gt; /usr/ssh/root.keys &amp;&amp; chmod 0600 /usr/ssh/root.keys
+--&gt; Using cache 3359a78489d3e4eca5921449532819c1b234660be8ac46f3752dad6ee8989eff
+--&gt; 3359a78489d3
+STEP 4/9: COPY quadlet/sklearn.kube quadlet/sklearn.yaml /usr/share/containers/systemd/
+--&gt; Using cache 5dbe59af0d46b95e74577ce99172e11917622f847d00e4b231cb3d10a937d74a
+--&gt; 5dbe59af0d46
+STEP 5/9: RUN sed -i -e &#39;/additionalimage.*/a &quot;/usr/lib/containers/storage&quot;,&#39;         /etc/containers/storage.conf
+--&gt; Using cache e16046b72ce01887444619469f31aa4d758cb7dc8b07c51dd7848cc452349df9
+--&gt; e16046b72ce0
+STEP 6/9: VOLUME /var/lib/containers
+--&gt; Using cache 8c0ce999a83d0f12b4484c750749d8bf7483ebd43862a14dd833f7c91416297e
+--&gt; 8c0ce999a83d
+STEP 7/9: RUN podman pull --root /usr/lib/containers/storage docker.io/kserve/sklearnserver:latest
+--&gt; Using cache 1102e2d0a0bc9d1295d6d78fa44b44774fd365c3c44dcb719c4bbdf549bd81fb
+--&gt; 1102e2d0a0bc
+STEP 8/9: RUN podman pull --root /usr/lib/containers/storage quay.io/mmortari/ml-iris:v1-modelcar
+--&gt; Using cache 8915d99264260de1e7f8b5e4c438e3cb9d66f6ce79fab5c5a7f47608ea71a654
+--&gt; 8915d9926426
+STEP 9/9: RUN podman system reset --force 2&gt;/dev/null
+--&gt; Using cache f2b145347580340b1257bafbd2d0dc4b78452af539c1aa13e4dc7a01b0181c51
+COMMIT mmortari/ml-iris:v1-bootc
+--&gt; f2b145347580
+Successfully tagged localhost/mmortari/ml-iris:v1-bootc
+Successfully tagged localhost/matteo/ml-bootc:latest
+f2b145347580340b1257bafbd2d0dc4b78452af539c1aa13e4dc7a01b0181c51
+Getting image source signatures
+Copying blob sha256:159348fa9cfbb75c5cb57e9fac24b9f28477412149e901bdadb909bfaeb84dad
+Copying blob sha256:9a1a0862c7696bd2e36bf7aad37f9e59a17de5e9ee17e4e7b9e9decc965476e7
+Copying blob sha256:8f4a35e515241f6ad7d2201a35e5ff05332e9fbcae37df036c075817e9b1804b
+
+...
+
+Copying blob sha256:4c718200cc93786f4b77f1e43fb517f87e45ff88544789a3390a55c63ec510ec
+Copying blob sha256:c6d68a01008a8b18cc588c38dda4043cf9b1a6ba672a791bc69c796da386e2ec
+Copying blob sha256:c7af602eb478cda4aa9841fb7049eaa3c55a3ed8b347d5a95956c783fe59d472
+Copying config sha256:f2b145347580340b1257bafbd2d0dc4b78452af539c1aa13e4dc7a01b0181c51
+Writing manifest to image destination
+</code></pre></div>
+<p>Now the bootc container image is available:</p>
+<p><img alt="image" src="../imgs/Screenshot%202024-06-24%20at%2013.22.15.png" /></p>
+<p>We could also make a Virtual Machine out of it:</p>
+<p><img alt="image" src="../imgs/Screenshot%202024-06-24%20at%2013.26.50.png" /></p>
+<p>I could run the Virtual Machine and it would serve my model:</p>
+<p><img alt="image" src="../imgs/Screenshot%202024-06-18%20at%2010.35.31_2.png" /></p>
+<p>and I could interact with it to make Inference:</p>
+<p><img alt="" src="../imgs/Screenshot%202024-06-19%20at%2011.48.25.png" /></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/containers/omlmd" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.expand", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
