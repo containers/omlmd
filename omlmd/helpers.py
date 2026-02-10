@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import os
 import urllib.request
 from collections.abc import Sequence
@@ -9,6 +10,9 @@ from pathlib import Path
 from omlmd.listener import Event, Listener, PushEvent
 from omlmd.model_metadata import ModelMetadata
 from omlmd.provider import OMLMDRegistry
+
+
+logger = logging.getLogger(__name__)
 
 
 def download_file(uri: str):
@@ -57,17 +61,25 @@ class Helper:
             model_format_name=model_format_name,
             model_format_version=model_format_version,
         )
+        owns_meta_files = True
         if isinstance(path, str):
             path = Path(path)
 
         json_meta = path.parent / "model_metadata.omlmd.json"
         yaml_meta = path.parent / "model_metadata.omlmd.yaml"
-        if (p := json_meta).exists() or (p := yaml_meta).exists():
+        if model_metadata.is_empty() and json_meta.exists() and yaml_meta.exists():
+            owns_meta_files = False
+            logger.warning("No metadata supplied, but reusing md files found in path.")
+            logger.debug(f"{json_meta}, {yaml_meta}")
+            with open(json_meta, "r") as f:
+                model_metadata = ModelMetadata.from_json(f.read())
+        elif (p := json_meta).exists() or (p := yaml_meta).exists():
             raise RuntimeError(
                 f"File '{p}' already exists. Aborting TODO: demonstrator."
             )
-        json_meta.write_text(model_metadata.to_json())
-        yaml_meta.write_text(model_metadata.to_yaml())
+        else:
+            json_meta.write_text(model_metadata.to_json())
+            yaml_meta.write_text(model_metadata.to_yaml())
 
         manifest_cfg = f"{json_meta}:application/x-config"
         files = [
@@ -86,8 +98,9 @@ class Helper:
             self.notify_listeners(PushEvent(target, model_metadata))
             return result
         finally:
-            json_meta.unlink()
-            yaml_meta.unlink()
+            if owns_meta_files:
+                json_meta.unlink()
+                yaml_meta.unlink()
 
     def pull(
         self, target: str, outdir: Path | str, media_types: Sequence[str] | None = None

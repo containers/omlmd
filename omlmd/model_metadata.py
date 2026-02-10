@@ -37,6 +37,9 @@ class ModelMetadata:
                     v
                 )  # post-fix "+json" for OCI annotation which is a str representing a json
         return result
+    
+    def is_empty(self) -> bool:
+        return all(getattr(self, f.name) is None for f in fields(ModelMetadata) if f.name != "customProperties") and not self.customProperties
 
     @staticmethod
     def from_json(json_str: str) -> "ModelMetadata":
