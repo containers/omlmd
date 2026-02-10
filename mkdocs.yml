@@ -1,4 +1,6 @@
 site_name: OCI Artifact for ML model & metadata
+repo_url: https://github.com/tarilabs/omlmd
+repo_name: tarilabs/omlmd
 theme:
   name: material
   palette:

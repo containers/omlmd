@@ -1,8 +1,10 @@
 # Overview
 
-This project aims to demonstrate how ML model and related metadata can be stored as an OCI Artifact and then leverage the ample OCI/Container ecosystem and infrastructure for MLOps.
+This project aims to demonstrate how ML model and related metadata can be stored as an OCI Artifact and then leverage the vast OCI/Container ecosystem and infrastructure for comprehensive MLOps.
 
-_Note: for the very impatients, you may want to go straing to Demo1._
+!!! tip "For the impatients"
+
+    You can jump straight to [Demo 1](demos/demo).
 
 The proposed OCI Artifact for ML model and metadata can be organized and then stored in OCI compliant registries with a format similar to the following:
 
@@ -12,11 +14,22 @@ Please note in the first case, both the actual ML model file (`mnist.onnx` file)
 
 In the second case, the OCI artifact does not contain the actual model file, as its metadata is referring a model already existing on external storage, such as HuggingFace hub, but similarly it could be pointing at a git repository with lfs support, an S3 bucket coordinates, etc.
 
+!!! note
+
+    The OCI artifact without model and only metadata is considered highly experimental.
+
 That represents an unified format to represent the ML model and its metadata as OCI Artifact, while keeping some flexibility on the actual storage solution (external reference). The first provides additional advantages such as an unified distribution mechanism for local, cached, disconnected environments, enabled by the OCI-Dist spec and related infrastructure.
 
 ## Example
 
-As a concrete example, here is the manifest of an OCI Artifact for ML model and metadata:
+As a concrete example, let's consider a manifest for an OCI Artifact for ML model and metadata where:
+
+- the Manifest's `.config` points to the layer containing metadata, following [OCI Image spec recommendation](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
+- there is another layer for the same metadata but in yaml format, for convenience
+- the model file is contained in a dedicated layer(s)
+- for convenience, the first level of the metadata are also projected to Manifest's Annotations. Since OCI Image annotation are only `string-string` value pairs, we are using media-type conventions for JSON structures. Please notice this is NOT intended to natively query in the scope of this project (more below).
+
+The manifest is relized with:
 
 ```json
 {
@@ -61,18 +74,13 @@ As a concrete example, here is the manifest of an OCI Artifact for ML model and 
 }
 ```
 
-Please notice:
-
-- the Manifest's `.config` points to the layer containing metadata, following [OCI Image spec recommendation](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage)
-- there is another layer for the same metadata but in yaml format, for convenience
-- the model file is contained in a dedicated layer(s)
-- for convenience, the first level of the metadata are also projected to Manifest's Annotations. Since OCI Image annotation are only `string-string` value pairs, we are using media-type conventions for JSON structures. Please notice this is NOT intended to natively query for the scope of this project (more below).
+and can be inspected using skopeo or any other standard OCI tooling.
 
 ## Integration with traditional metadata regisries
 
 ![](./imgs/Screenshot%202024-07-28%20at%2015.07.34.png)
 
-From the perspective of this project, Metadata Registry (such as Kubeflow Model Registry) and OCI format are meant to be complementary, integrated solutions: a Data Scientist can choose to keep using existing MR for the iteration cycles during the inner-loop of the MLOps workflow storing the ad-interim models on any storage such as S3, PVs, etc.; when the resulting model start to get satisfactory, this OCI format could be more relevant, to integrate with existing infrastructure. To make this transition smooth, a Python-sdk and cli tooling must be made available (scope of this project).
+From the perspective of this project, Metadata Registry (such as [Kubeflow Model Registry](https://www.kubeflow.org/docs/components/model-registry)) and OCI format are meant to be complementary, integrated solutions: a Data Scientist can choose to keep using existing MR for the iteration cycles during the inner-loop of the MLOps workflow storing the ad-interim models on any storage such as S3, PVs, etc.; when the resulting model start to get satisfactory, this OCI format could be more relevant, to integrate with existing infrastructure. To make this transition smooth, a Python-sdk and cli tooling must be made available (scope of this project).
 
 During the transition from more inner-loop centric to outer-loop phases of the MLOps life cycle, integrating with OCI infrastructure would allow creating workflow to produce, provenance and lineage additional Container artifacts, such as Bootable container images, ModelCar images for KServe, etc.
 (see section below about integration with pipelines)
