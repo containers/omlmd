@@ -1,8 +1,9 @@
 import json
 import subprocess
 import tempfile
-from pathlib import Path
+import typing as t
 from hashlib import sha256
+from pathlib import Path
 
 import pytest
 
@@ -41,13 +42,19 @@ def test_call_push_using_md_from_file(mocker):
 
 def test_push_event(mocker):
     registry = OMLMDRegistry()
-    mocker.patch.object(registry, "push", return_value=None)
+    m = mocker.MagicMock()
+    m.headers = {"Docker-Content-Digest": "sha256:123"}
+    mocker.patch.object(
+        registry,
+        "push",
+        return_value=m,
+    )
     omlmd = Helper(registry)
 
     events = []
 
     class MyListener(Listener):
-        def update(self, _, event: Event) -> None:
+        def update(self, source: t.Any, event: Event) -> None:
             events.append(event)
 
     omlmd.add_listener(MyListener())
@@ -141,7 +148,7 @@ def test_e2e_push_pull_column(tmp_path, target):
     content = "Hello, World!"
     content_sha = sha256(content.encode("utf-8")).hexdigest()
     here = Path.cwd()
-    temp = here / ("sha256:"+content_sha)
+    temp = here / ("sha256:" + content_sha)
     try:
         with open(temp, "w") as f:
             f.write(content)
@@ -155,4 +162,3 @@ def test_e2e_push_pull_column(tmp_path, target):
             assert pulled_sha == content_sha
     finally:
         temp.unlink()
-
