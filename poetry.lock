@@ -1257,14 +1257,14 @@ typing-extensions = {version = "*", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "model-registry"
-version = "0.2.20"
+version = "0.2.21"
 description = "Client for Kubeflow Model Registry"
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["dev"]
 files = [
-    {file = "model_registry-0.2.20-py3-none-any.whl", hash = "sha256:6c7a2ae92d171e9ad16b855c9570911417a42602ce37695eee2d829e8a797b91"},
-    {file = "model_registry-0.2.20.tar.gz", hash = "sha256:59abee357ad430e1f3dd0972d29d880d992ef98c785a35c46a8fb61fba4e386b"},
+    {file = "model_registry-0.2.21-py3-none-any.whl", hash = "sha256:1546fb3b9f888a01b34307d330078241bae1244a123a83b008c85e9384e29205"},
+    {file = "model_registry-0.2.21.tar.gz", hash = "sha256:07eb145fedf519c16cdd9151f49d53fa6b10b68dfd81a92e67f4c9e2b7f6c244"},
 ]
 
 [package.dependencies]
