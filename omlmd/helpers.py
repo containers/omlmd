@@ -77,7 +77,7 @@ class Helper:
         self,
         target: str,
         outdir: str,
-        media_types: List[str]
+        media_types: Optional[List[str]] = None
     ):
         self._registry.download_layers(target, outdir, media_types)
 

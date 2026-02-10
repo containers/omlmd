@@ -25,3 +25,8 @@ omlmd = "omlmd.cli:cli"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+markers = [
+    "e2e: end-to-end testing with localhost:5001",
+]

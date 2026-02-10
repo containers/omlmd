@@ -26,7 +26,7 @@ class OMLMDRegistry(oras.provider.Registry):
         paths = []
 
         for layer in manifest.get('layers', []):
-            if len(media_types) == 0 or layer['mediaType'] in media_types:
+            if media_types == None or len(media_types) == 0 or layer['mediaType'] in media_types:
                 artifact = layer['annotations']['org.opencontainers.image.title']
                 outfile = oras.utils.sanitize_path(download_dir, os.path.join(download_dir, artifact))
                 path = self.download_blob(package, layer['digest'], outfile)
