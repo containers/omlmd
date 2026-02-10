@@ -1,6 +1,7 @@
 # Using this to scope CLI targets
 import click
 from omlmd.helpers import Helper
+from omlmd.model_metadata import deserialize_mdfile
 
 @click.group()
 def cli():
@@ -29,8 +30,20 @@ def config(target):
 def crawl(targets):
     """Crawls configuration for the given list of OCI Artifact for ML model and metadata."""
     click.echo(Helper().crawl(targets))
+    
+@click.command()
+@click.argument('target', required=True)
+@click.argument('path', required=True, type=click.Path())
+@click.option('-m', '--metadata', required=True, type=click.Path())
+def push(target, path, metadata):
+    """Pushes an OCI Artifact containing ML model and metadata, supplying metadata from file as necessary"""
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
+    md = deserialize_mdfile(metadata)
+    click.echo(Helper().push(target, path, **md))
 
 cli.add_command(pull)
 cli.add_command(get)
 get.add_command(config)
 cli.add_command(crawl)
+cli.add_command(push)
