@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "omlmd"
-version = "0.1.5"
+version = "0.1.6"
 description = "OCI Artifact for ML model & metadata"
 authors = ["Matteo Mortari <matteo.mortari@gmail.com>"]
 readme = "README.md"
