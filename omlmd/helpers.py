@@ -100,6 +100,7 @@ class Helper:
                 files=files,
                 manifest_annotations=model_metadata.to_annotations_dict(),
                 manifest_config=manifest_cfg,
+                do_chunked=True,
             )
             self.notify_listeners(PushEvent(target, model_metadata))
             return result

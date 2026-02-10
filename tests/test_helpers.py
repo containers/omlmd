@@ -1,4 +1,5 @@
 import json
+import subprocess
 import tempfile
 from pathlib import Path
 
@@ -62,6 +63,39 @@ def test_push_event(mocker):
     e0 = events[0]
     assert e0.target == "unexistent:8080/testorgns/ml-iris:v1"
     assert e0.metadata == ModelMetadata.from_dict(md)
+
+
+@pytest.mark.e2e
+def test_push_pull_chunked(tmp_path, target):
+    omlmd = Helper()
+
+    md = {
+        "name": "mnist",
+        "description": "Lorem ipsum",
+        "author": "John Doe",
+        "accuracy": 0.987,
+    }
+    here = Path.cwd()
+    temp = here / "temp"
+    base_size = 16 * 1024 * 1024 * 3  # 48MB
+    try:
+        subprocess.run(
+            [
+                "dd",
+                "if=/dev/null",
+                f"of={temp}",
+                "bs=1",
+                "count=0",
+                f"seek={base_size}",
+            ],
+        )
+
+        omlmd.push(target, temp, **md)
+        omlmd.pull(target, tmp_path)
+        assert len(list(tmp_path.iterdir())) == 3
+        assert tmp_path.joinpath(temp.name).stat().st_size == base_size
+    finally:
+        temp.unlink()
 
 
 @pytest.mark.e2e
