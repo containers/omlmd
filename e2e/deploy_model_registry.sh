@@ -12,7 +12,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 kubectl create namespace kubeflow
-kubectl apply -n kubeflow -k "https://github.com/kubeflow/model-registry/manifests/kustomize/overlays/db?ref=v0.2.20"
+kubectl apply -n kubeflow -k "https://github.com/kubeflow/model-registry/manifests/kustomize/overlays/db?ref=v0.2.21"
 
 sleep 1
 kubectl get -n kubeflow deployments
@@ -33,7 +33,7 @@ echo "=== Model Registry DB Logs ==="
 kubectl logs -n kubeflow deployment/model-registry-db
 
 echo "Waiting for Model Registry deployment..."
-if ! kubectl wait --for=condition=available -n kubeflow deployment/model-registry-deployment --timeout=1m; then
+if ! kubectl wait --for=condition=available -n kubeflow deployment/model-registry-deployment --timeout=2m; then
   echo "Model Registry deployment failed or timed out."
   kubectl get -n kubeflow deployments
   echo "=== Model Registry Deployment Logs ==="
