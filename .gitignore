@@ -7,4 +7,9 @@ tmp
 efi-variable-store
 *.onnx
 mr-integration/config/ml-metadata/metadata.sqlite.db
+
+# Generated python library wheels
 dist
+
+# Mkdocs
+site

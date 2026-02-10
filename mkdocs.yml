@@ -19,6 +19,8 @@ nav:
     - 'Demo 3: Signature and Attestation': 'demos/demo3.md'
   - Use Cases: 'use-cases.md'
   - Glossary: 'glossary.md'
+  - Appendixes:
+    - 'All links': 'appendixes/appendix-links.md'
 extra:
   social:
     - icon: fontawesome/brands/github 
