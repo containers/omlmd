@@ -12,7 +12,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 kubectl create namespace kubeflow
-kubectl apply -n kubeflow -k "https://github.com/kubeflow/model-registry/manifests/kustomize/overlays/db?ref=v0.2.21"
+kubectl apply -n kubeflow -k "https://github.com/kubeflow/model-registry/manifests/kustomize/overlays/db?ref=v0.2.22"
 
 sleep 1
 kubectl get -n kubeflow deployments

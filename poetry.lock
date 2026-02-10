@@ -1257,14 +1257,14 @@ typing-extensions = {version = "*", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "model-registry"
-version = "0.2.21"
+version = "0.2.22"
 description = "Client for Kubeflow Model Registry"
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["dev"]
 files = [
-    {file = "model_registry-0.2.21-py3-none-any.whl", hash = "sha256:1546fb3b9f888a01b34307d330078241bae1244a123a83b008c85e9384e29205"},
-    {file = "model_registry-0.2.21.tar.gz", hash = "sha256:07eb145fedf519c16cdd9151f49d53fa6b10b68dfd81a92e67f4c9e2b7f6c244"},
+    {file = "model_registry-0.2.22-py3-none-any.whl", hash = "sha256:bd19048ae9ae98aa3b8fc29c605577c93eafd0223a4da66b0695448235aa56c8"},
+    {file = "model_registry-0.2.22.tar.gz", hash = "sha256:1044e62dbb13165e930bb8319b57027a6a6d86d62987416f9a248a377981d41e"},
 ]
 
 [package.dependencies]
@@ -1278,7 +1278,7 @@ typing-extensions = ">=4.8,<5.0"
 
 [package.extras]
 boto3 = ["boto3 (>=1.37.34,<2.0.0)"]
-hf = ["huggingface-hub (>=0.20.1,<0.34.0)"]
+hf = ["huggingface-hub (>=0.20.1,<0.35.0)"]
 olot = ["olot (>=0.1.6,<0.2.0)"]
 
 [[package]]
