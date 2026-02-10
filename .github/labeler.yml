@@ -1,0 +1,15 @@
+Area/Docs and website:
+- changed-files:
+  - any-glob-to-any-file: docs/**
+
+Area/End to End:
+- changed-files:
+  - any-glob-to-any-file: e2e/**
+
+Area/Core:
+- changed-files: 
+  - any-glob-to-any-file: omlmd/**
+
+Area/GitHub CI and repo maintenance:
+- changed-files:
+  - any-glob-to-any-file: .github/**
