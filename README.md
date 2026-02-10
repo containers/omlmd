@@ -1,34 +1,34 @@
 <!--
-1. migrating from https://github.com/tarilabs/oml
+1. migrating from https://github.com/containers/oml
 2. remember not to use relative IMGs in this, as it's also being used for pypi
 -->
 
-![](https://github.com/tarilabs/omlmd/raw/main/docs/imgs/banner.png)
+![](https://github.com/containers/omlmd/raw/main/docs/imgs/banner.png)
 
 # OCI Artifact for ML model & metadata
 
-[![Python](https://img.shields.io/badge/python%20-3.9%7C3.10%7C3.11%7C3.12-blue)](https://github.com/tarilabs/omlmd)
+[![Python](https://img.shields.io/badge/python%20-3.9%7C3.10%7C3.11%7C3.12-blue)](https://github.com/containers/omlmd)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Build](https://github.com/tarilabs/omlmd/actions/workflows/build.yaml/badge.svg)](https://github.com/tarilabs/omlmd/actions/workflows/build.yaml)
-[![E2E testing](https://github.com/tarilabs/omlmd/actions/workflows/e2e.yaml/badge.svg)](https://github.com/tarilabs/omlmd/actions/workflows/e2e.yaml)
+[![Build](https://github.com/containers/omlmd/actions/workflows/build.yaml/badge.svg)](https://github.com/containers/omlmd/actions/workflows/build.yaml)
+[![E2E testing](https://github.com/containers/omlmd/actions/workflows/e2e.yaml/badge.svg)](https://github.com/containers/omlmd/actions/workflows/e2e.yaml)
 [![PyPI - Version](https://img.shields.io/pypi/v/omlmd)](https://pypi.org/project/omlmd)
 
-[![Static Badge](https://img.shields.io/badge/Website-green?style=plastic&label=Documentation&labelColor=blue)](https://tarilabs.github.io/omlmd)
-[![GitHub Repo stars](https://img.shields.io/github/stars/tarilabs/omlmd?label=GitHub%20Repository)](https://github.com/tarilabs/omlmd)
+[![Static Badge](https://img.shields.io/badge/Website-green?style=plastic&label=Documentation&labelColor=blue)](https://containers.github.io/omlmd)
+[![GitHub Repo stars](https://img.shields.io/github/stars/containers/omlmd?label=GitHub%20Repository)](https://github.com/containers/omlmd)
 [![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCmvDe7dCEmiT4J0XoM6TREQ?label=YouTube%20Playlist)](https://www.youtube.com/watch?v=W4GwIRPXE8E&list=PLdbdefeRIj9SRbg6Hkr15GeyPH0qpk_ww)
 
 This project is a collection of blueprints, patterns and toolchain (in the form of python SDK and CLI) to leverage OCI Artifact and containers for ML model and metadata.
 
-Documentation: https://tarilabs.github.io/omlmd
+Documentation: https://containers.github.io/omlmd
 
-GitHub repository: https://github.com/tarilabs/omlmd <br/>
+GitHub repository: https://github.com/containers/omlmd <br/>
 YouTube video playlist: https://www.youtube.com/watch?v=W4GwIRPXE8E&list=PLdbdefeRIj9SRbg6Hkr15GeyPH0qpk_ww <br/>
 Pypi distribution: https://pypi.org/project/omlmd <br/>
 
 ## Installation
 
 > [!TIP]
-> We recommend checking out the [Getting Started tutorial](https://tarilabs.github.io/omlmd) in the documentation; below instructions are provided for a quick overview.
+> We recommend checking out the [Getting Started tutorial](https://containers.github.io/omlmd) in the documentation; below instructions are provided for a quick overview.
 
 In your Python environment, use:
 
@@ -98,4 +98,4 @@ jq.compile( "max_by(.config.customProperties.accuracy).reference" ).input_text(c
 
 ## To be continued...
 
-Don't forget to checkout the [documentation website](https://tarilabs.github.io/omlmd) for more information!
+Don't forget to checkout the [documentation website](https://containers.github.io/omlmd) for more information!

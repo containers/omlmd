@@ -8,12 +8,12 @@ This is a collection of all the links from this website:
 - https://github.com/kubernetes/enhancements/pull/4639
 - https://github.com/lampajr/oci-storage-initializer/blob/main/GET_STARTED.md
 - https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage
-- https://github.com/tarilabs/omlmd
-- https://github.com/tarilabs/omlmd/actions/workflows/build.yaml
-- https://github.com/tarilabs/omlmd/actions/workflows/e2e.yaml
+- https://github.com/containers/omlmd
+- https://github.com/containers/omlmd/actions/workflows/build.yaml
+- https://github.com/containers/omlmd/actions/workflows/e2e.yaml
 - https://jqlang.github.io/jq
 - https://pypi.org/project/omlmd
-- https://tarilabs.github.io/omlmd
+- https://containers.github.io/omlmd
 - https://www.cncf.io/projects/confidential-containers
 - https://www.kubeflow.org/docs/components/model-registry
 - https://www.openpolicyagent.org/

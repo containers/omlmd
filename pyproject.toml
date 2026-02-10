@@ -6,11 +6,11 @@ authors = ["Matteo Mortari <matteo.mortari@gmail.com>"]
 readme = "README.md"
 
 [project.urls]
-Homepage = "https://tarilabs.github.io/omlmd"
-Documentation = "https://tarilabs.github.io/omlmd"
-Repository = "https://github.com/tarilabs/omlmd.git"
-Issues = "https://github.com/tarilabs/omlmd/issues"
-Changelog = "https://github.com/tarilabs/omlmd/releases"
+Homepage = "https://containers.github.io/omlmd"
+Documentation = "https://containers.github.io/omlmd"
+Repository = "https://github.com/containers/omlmd.git"
+Issues = "https://github.com/containers/omlmd/issues"
+Changelog = "https://github.com/containers/omlmd/releases"
 
 [tool.poetry.dependencies]
 python = "^3.9"
