@@ -4,9 +4,12 @@ import tempfile
 import typing as t
 from hashlib import sha256
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
+from click.testing import CliRunner
 
+from omlmd.cli import cli
 from omlmd.constants import MIME_APPLICATION_MLMODEL
 from omlmd.helpers import Helper
 from omlmd.listener import Event, Listener
@@ -162,3 +165,37 @@ def test_e2e_push_pull_column(tmp_path, target):
             assert pulled_sha == content_sha
     finally:
         temp.unlink()
+
+
+def test_cli_push_logs_digest(mocker):
+    """Issue #19: CLI push should log the digest, not the raw Response object."""
+    mock_response = MagicMock()
+    mock_response.headers = {"Docker-Content-Digest": "sha256:abc123def456"}
+    mocker.patch.object(Helper, "push", return_value=mock_response)
+
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        Path("model.bin").write_text("fake model")
+        Path("meta.json").write_text('{"name": "test"}')
+        result = runner.invoke(cli, ["push", "--plain-http", "localhost:5000/test:v1", "model.bin", "-m", "meta.json"])
+
+    assert result.exit_code == 0
+    assert "sha256:abc123def456" in result.output
+    assert "Pushed" in result.output
+    assert "<Response" not in result.output
+
+
+def test_cli_push_logs_unknown_when_no_digest(mocker):
+    """CLI push should handle missing digest header gracefully."""
+    mock_response = MagicMock()
+    mock_response.headers = {}
+    mocker.patch.object(Helper, "push", return_value=mock_response)
+
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        Path("model.bin").write_text("fake model")
+        Path("meta.json").write_text('{"name": "test"}')
+        result = runner.invoke(cli, ["push", "--plain-http", "localhost:5000/test:v1", "model.bin", "-m", "meta.json"])
+
+    assert result.exit_code == 0
+    assert "unknown" in result.output

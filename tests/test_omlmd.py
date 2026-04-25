@@ -95,3 +95,26 @@ def test_is_empty():
         name="mnist",
     )
     assert not md.is_empty()
+
+
+def test_to_annotations_dict_skips_empty_custom_properties():
+    """Issue #18: empty customProperties should not produce an annotation."""
+    md = ModelMetadata(name="test-model", customProperties={})
+    annotations = md.to_annotations_dict()
+    assert "name" in annotations
+    assert "customProperties+json" not in annotations
+
+
+def test_to_annotations_dict_includes_non_empty_custom_properties():
+    md = ModelMetadata(name="test-model", customProperties={"accuracy": 0.99})
+    annotations = md.to_annotations_dict()
+    assert "name" in annotations
+    assert "customProperties+json" in annotations
+
+
+def test_to_annotations_dict_skips_none_values():
+    md = ModelMetadata(name="test-model")
+    annotations = md.to_annotations_dict()
+    assert "name" in annotations
+    assert "description" not in annotations
+    assert "author" not in annotations

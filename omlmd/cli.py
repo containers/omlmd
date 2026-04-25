@@ -96,4 +96,6 @@ def push(
     if empty_metadata:
         logger.warning(f"Pushing to {target} with empty metadata.")
     md = deserialize_mdfile(metadata) if metadata else {}
-    click.echo(Helper.from_default_registry(plain_http).push(target, path, **md))
+    response = Helper.from_default_registry(plain_http).push(target, path, **md)
+    digest = response.headers.get("Docker-Content-Digest", "unknown")
+    click.echo(f"Pushed {target}@{digest}")

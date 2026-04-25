@@ -32,6 +32,8 @@ class ModelMetadata:
                 result[k] = v
             elif v is None:
                 continue
+            elif isinstance(v, dict) and not v:
+                continue  # skip empty dicts (e.g. empty customProperties)
             else:
                 result[f"{k}+json"] = json.dumps(
                     v
